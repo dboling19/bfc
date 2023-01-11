@@ -10,9 +10,13 @@ use App\DisplayController;
 class FileController extends AbstractController
 {
 
-    #[Route('/file', name: 'app_file')]
-    public function index(): Response
+    /**
+    * 
+    #[Route('/save', name: 'save_file')]
+    public function save_file(): Response
     {
+      
+
         return $this->render('file/index.html.twig', [
             
         ]);
