@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Finder\Finder;
 
 class DisplayController extends AbstractController
 {
@@ -21,8 +22,14 @@ class DisplayController extends AbstractController
   public function home(): Response
   {
 
-    $files = scandir($this->dir);
-    // var_dump($files);die;
+    $finder = new Finder();
+    $finder->in($this->dir);
+
+    if ($finder->hasResults()) {
+      $files = iterator_to_array($finder->getIterator());
+    }
+    // dd(iterator_to_array($finder->getIterator()));
+
 
     return $this->render('display/home.html.twig', [
       'files' => $files,
