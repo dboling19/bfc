@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  BFC - Home
+{% endblock %}
+
+{% block body %}
+  {{ include("navbar.html.twig") }}
+
+  <div class="w3-responsive">
+    <table class="w3-table-all">
+      <tr>
+        <th style='padding:2px'>File Name</th>
+      </tr>
+      {% for row in files %}
+        <tr>
+          <td class='w3-border' style='padding:2px'>{{row}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+{% endblock %}

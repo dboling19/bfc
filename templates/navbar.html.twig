@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+  {% set route_name = app.request.attributes.get('_route')%}
+  <div class="w3-bar" style="background-color:#e0e0e0">
+    <a class="w3-button w3-bar-item w3-border w3-padding-small" href="{{ path('home') }}"><b>Home</b></a>
+
+
+  </div>
+
+{% endblock %}
