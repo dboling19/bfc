@@ -8,7 +8,7 @@
 {% block body %}
   {{ include("navbar.html.twig") }}
 
-  <div class="w3-responsive">
+  <div class="w3-container w3-grey w3-threequarter w3-left">
     <table class="w3-table-all">
       <tr>
         <th style='padding:2px'>File Name</th>
@@ -18,7 +18,7 @@
       {% for row in files %}
         <tr>
          <td class='w3-border' style='padding:2px'>{{ row.filename }}</td>
-         <td class='w3-border' style='padding:2px'>{{ row.mTime|format_datetime() }}</td>
+         <td class='w3-border' style='padding:2px'>{{ row.mTime|format_datetime('long', 'long') }}</td>
          <td class='w3-border' style='padding:2px'>{{ row.size }}</td>
         </tr>
       {% endfor %}

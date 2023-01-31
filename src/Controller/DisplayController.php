@@ -18,6 +18,11 @@ class DisplayController extends AbstractController
     $this->dir = $params->get('app.content_dir');
   }
 
+  /**
+   * Controls the main file display, search, and center page
+   * 
+   * @author Daniel Boling
+   */
   #[Route('/', name: 'home')]
   public function home(): Response
   {
@@ -27,6 +32,8 @@ class DisplayController extends AbstractController
 
     if ($finder->hasResults()) {
       $files = iterator_to_array($finder->getIterator());
+    } else {
+      $files = null;
     }
     // dd(iterator_to_array($finder->getIterator()));
 

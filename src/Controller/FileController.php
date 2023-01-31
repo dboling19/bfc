@@ -11,7 +11,10 @@ class FileController extends AbstractController
 {
 
     /**
-    * 
+     * Controls file saving to the directory and database
+     * 
+     * @author Daniel Boling
+     */
     #[Route('/save', name: 'save_file')]
     public function save_file(): Response
     {
