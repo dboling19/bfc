@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 
-
-{% block title %}
-  BFC - Home
-{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
   {{ include("navbar.html.twig") }}
@@ -17,12 +14,26 @@
       </tr>
       {% for row in files %}
         <tr>
-         <td class='w3-border' style='padding:2px'>{{ row.filename }}</td>
-         <td class='w3-border' style='padding:2px'>{{ row.mTime|format_datetime('long', 'long') }}</td>
-         <td class='w3-border' style='padding:2px'>{{ row.size }}</td>
+         <td class='w3-border' style='padding:2px'><a href="{{ path('home', {filename: row.filename}) }}">{{ row.filename }}</a></td>
+         <td class='w3-border' style='padding:2px'>{{ row.mTime|format_datetime('medium', 'short') }}</td>
+         <td class='w3-border' style='padding:2px'>{{ row.size // 1024 }} KB</td>
         </tr>
       {% endfor %}
     </table>
+  </div>
+  <div class="w3-container w3-quarter w3-right">
+    {% if file is not empty %}
+    <p class="w3-card w3-border">
+      <div class="w3-panel">
+        <b>Details</b>
+        <br>
+        {{ file.filename }}
+        <br>
+        {{ file.size // 1024 }} KB
+        <br>
+      </div>
+    </p>
+    {% endif %}
   </div>
 
 {% endblock %}

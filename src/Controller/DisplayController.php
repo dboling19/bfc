@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Finder\Finder;
@@ -24,8 +25,18 @@ class DisplayController extends AbstractController
    * @author Daniel Boling
    */
   #[Route('/', name: 'home')]
-  public function home(): Response
+  public function home(Request $request): Response
   {
+
+    $file = null;
+
+    if ($params = $request->query->all())
+    {
+      $finder = new Finder();
+      $finder->in($this->dir)->name($params['filename']);
+      $file = iterator_to_array($finder->getIterator());
+      $file = array_pop($file);
+    }
 
     $finder = new Finder();
     $finder->in($this->dir);
@@ -40,6 +51,7 @@ class DisplayController extends AbstractController
 
     return $this->render('display/home.html.twig', [
       'files' => $files,
+      'file' => $file,
     ]);
   }
 }

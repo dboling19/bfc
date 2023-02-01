@@ -1,20 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FileController!{% endblock %}
+{% block title %}Save File{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+  {{ include("navbar.html.twig") }}
+  <div class="w3-third w3-container">
+    <form action="save" method="POST" class="w3-border w3-panel">
+      <p>
+        <label>Filename</label>
+        <br>
+        <input type="text" id="filename" name="filename" class="db-input">
+      </p>
+      <p>
+        <input type="file" id="file" name="file">
+      </p>
+      <p>
+        <button type="submit" id="submit" name="submit" label="Save File">
+      </p>
+    </form>
+  </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Daniel Boling/Documents/Programming/bfc/src/Controller/FileController.php'|file_link(0) }}">src/Controller/FileController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Daniel Boling/Documents/Programming/bfc/templates/file/index.html.twig'|file_link(0) }}">templates/file/index.html.twig</a></code></li>
-    </ul>
-</div>
 {% endblock %}
