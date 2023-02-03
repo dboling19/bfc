@@ -5,35 +5,37 @@
 {% block body %}
   {{ include("navbar.html.twig") }}
 
-  <div class="w3-container w3-grey w3-threequarter w3-left">
-    <table class="w3-table-all">
-      <tr>
-        <th style='padding:2px'>File Name</th>
-        <th style='padding:2px'>Last Modified</th>
-        <th style='padding:2px'>Filesize</th>
-      </tr>
-      {% for row in files %}
+  <div class="db-container" style="max-width:60%">
+    <div class="db-container w3-grey db-threequarter db-left db-max-large">
+      <table class="w3-table-all">
         <tr>
-         <td class='w3-border' style='padding:2px'><a href="{{ path('home', {filename: row.filename}) }}">{{ row.filename }}</a></td>
-         <td class='w3-border' style='padding:2px'>{{ row.mTime|format_datetime('medium', 'short') }}</td>
-         <td class='w3-border' style='padding:2px'>{{ row.size // 1024 }} KB</td>
+          <th class='db-padding-small'>File Name</th>
+          <th class='db-padding-small'>Date Modified</th>
+          <th class='db-padding-small'>Filesize</th>
         </tr>
-      {% endfor %}
-    </table>
-  </div>
-  <div class="w3-container w3-quarter w3-right">
-    {% if file is not empty %}
-    <p class="w3-card w3-border">
-      <div class="w3-panel">
-        <b>Details</b>
-        <br>
-        {{ file.filename }}
-        <br>
-        {{ file.size // 1024 }} KB
-        <br>
-      </div>
-    </p>
-    {% endif %}
+        {% for row in files %}
+          <tr>
+          <td class='db-table-row'><a href="{{ path('home', {id: row.id}) }}">{{ row.name }}</a></td>
+          <td class='db-table-row'>{{ row.dateModified|format_datetime('medium', 'short') }}</td>
+          <td class='db-table-row'>{{ row.size }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="db-container db-quarter db-left db-max-small">
+      {% if file is not empty %}
+      <p class="db-border db-panel">
+          <b>Details</b>
+          <br>
+          {{ file.name }}
+          <br>
+          {{ file.size }}
+          <br>
+          {{ file.dateModified|format_datetime('short', 'short') }}
+          <br>
+      </p>
+      {% endif %}
+    </div>
   </div>
 
 {% endblock %}
