@@ -27,7 +27,8 @@ class DisplayController extends AbstractController
 
   public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, FileDirRepository $file_dir_repo)
   { 
-    $this->dir = $params->get('app.content_dir');
+    $this->home_dir = $params->get('app.home_dir');
+    $this->trash_dir = $params->get('app.trash_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
@@ -44,40 +45,45 @@ class DisplayController extends AbstractController
   {
 
     $filesystem = new Filesystem();
-    if (!$filesystem->exists($this->dir))
+    if (!$filesystem->exists($this->home_dir))
     // if the system dir does not exist, create it
     {
-      $filesystem->mkdir($this->dir);
+      $filesystem->mkdir($this->home_dir);
     }
 
-    if (!$this->dir_repo->findBy(['name' => $this->dir]))
+    if (!$filesystem->exists($this->trash_dir))
+    {
+      $filesystem->mkdir($this->trash_dir);
+    }
+
+    if (!$this->dir_repo->findBy(['name' => $this->trash_dir]))
+    {
+      $dir = new Directory();
+      $dir->setName($this->trash_dir);
+      $dir->setNotes('Trash Directory');
+
+      $this->em->persist($dir);
+      $this->em->flush();
+    }
+
+    if (!$this->dir_repo->findBy(['name' => $this->home_dir]))
     // if directory does not exist in database create it
     {
       $dir = new Directory();
-      $dir->setName($this->dir);
+      $dir->setName($this->home_dir);
       $dir->setNotes('Home directory');
       
       $this->em->persist($dir);
       $this->em->flush();
     }
 
-    // $finder = new Finder();
-    // $finder->in($this->dir);
-
-    // if ($finder->hasResults()) {
-    //   $files = iterator_to_array($finder->getIterator());
-    // } else {
-    //   $files = null;
-    // }
-
     $file = null;
-
     if ($params = $request->query->all())
     {
       $file = $this->file_repo->find($params['id']);
     }
 
-    
+
     $files = $this->file_repo->findAll();
 
 

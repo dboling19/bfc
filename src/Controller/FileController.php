@@ -26,7 +26,8 @@ class FileController extends AbstractController
 
   public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, FileDirRepository $file_dir_repo)
   { 
-    $this->dir = $params->get('app.content_dir');
+    $this->home_dir = $params->get('app.home_dir');
+    $this->trash_dir = $params->get('app.trash_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
@@ -47,15 +48,15 @@ class FileController extends AbstractController
     {
 
       foreach ($files as $result) {
-        // dd($result->getClientOriginalExtension());
         $file = new File();
         $params['filename'] .= '.' . $result->getClientOriginalExtension();
         $file->setName($params['filename']);
         $file->setSize($this->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
+        $file->setTrash(false);
         $file->setNotes('Test File');
-        $result->move($this->dir, $params['filename']);
+        $result->move($this->home_dir, $params['filename']);
 
         $this->em->persist($file);
         $this->em->flush();
@@ -65,6 +66,26 @@ class FileController extends AbstractController
     
     return $this->redirectToRoute('home');
   }
+
+
+  /**
+   * Moves a file to the app trash folder for deletion.
+   * Another function will completely delete the file.
+   * 
+   * @author Daniel Boling
+   */
+  #[Route('/trash', name:'trash_file')]
+  public function move_to_trash(Request $request): Response
+  {
+    if ($params = $request->request->all())
+    {
+      $file = $this->file_repo->find($params['file_id']);
+      $finder = new Finder();
+      $result = $finder->files()->name($file->getName());
+      $result->move($this->trash_dir);
+    }
+  }
+
 
   public function formatBytes($bytes, $precision = 2) {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];

@@ -16,10 +16,22 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DirectoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Directory::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+      parent::__construct($registry, Directory::class);
+  }
+
+  /**
+  * @return Directory[] Returns an array of Directory objects
+  */
+   public function findHome(): array
+   {
+      return $this->createQueryBuilder('dir')
+        ->andWhere('NOT dir.name like '%trash%'')
+        ->getQuery()
+        ->getResult()
+      ;
+   }
 
     public function save(Directory $entity, bool $flush = false): void
     {

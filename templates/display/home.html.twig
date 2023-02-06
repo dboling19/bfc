@@ -33,9 +33,21 @@
           <br>
           {{ file.dateModified|format_datetime('short', 'short') }}
           <br>
+          <button type="button" name="trash_file" onclick="trash_file({{ file.id }})">Trash File</button>
       </p>
       {% endif %}
     </div>
   </div>
+
+
+  <script>
+    function trash_file(file_id) {
+      result = window.confirm("Really delete file?\nFile will be moved to TRASH");
+      if (result == true) {
+        window.location({{ path(')}})
+      }
+    }
+
+  </script>
 
 {% endblock %}

@@ -16,28 +16,31 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FileRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, File::class);
-    }
 
-    public function save(File $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+  private $dir;
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+      parent::__construct($registry, File::class);
+  }
 
-    public function remove(File $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+  public function save(File $entity, bool $flush = false): void
+  {
+      $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+      if ($flush) {
+          $this->getEntityManager()->flush();
+      }
+  }
+
+  public function remove(File $entity, bool $flush = false): void
+  {
+      $this->getEntityManager()->remove($entity);
+
+      if ($flush) {
+          $this->getEntityManager()->flush();
+      }
+  }
 
 //    /**
 //     * @return File[] Returns an array of File objects

@@ -34,6 +34,9 @@ class File
     #[ORM\ManyToMany(targetEntity: FileDir::class, mappedBy: 'file_id')]
     private Collection $dirFiles;
 
+    #[ORM\Column(options:["default" => false])]
+    private ?bool $trash = null;
+
     public function __construct()
     {
         $this->dirFiles = new ArrayCollection();
@@ -127,6 +130,18 @@ class File
         if ($this->dirFiles->removeElement($dirFile)) {
             $dirFile->removeFileId($this);
         }
+
+        return $this;
+    }
+
+    public function isTrash(): ?bool
+    {
+        return $this->trash;
+    }
+
+    public function setTrash(bool $trash): self
+    {
+        $this->trash = $trash;
 
         return $this;
     }
