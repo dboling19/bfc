@@ -47,7 +47,9 @@ class FileController extends AbstractController
     {
 
       foreach ($files as $result) {
+        // dd($result->getClientOriginalExtension());
         $file = new File();
+        $params['filename'] .= '.' . $result->getClientOriginalExtension();
         $file->setName($params['filename']);
         $file->setSize($this->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));

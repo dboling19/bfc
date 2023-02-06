@@ -4,10 +4,10 @@
 {% block body %}
   <div class="w3-bar" style="background-color:#e0e0e0">
     <a class="w3-button w3-bar-item w3-border w3-padding-small" href="{{ path('home') }}"><b>Home</b></a>
-    <a class="w3-button w3-bar-item w3-border w3-padding-small" onclick="open_add_form()"><b>Add File</b></a>
+    <a class="w3-button w3-bar-item w3-border w3-padding-small" onclick="toggle_add_form()"><b>Add File</b></a>
 
   </div>
-  <div class="db-form-popup db-quarter db-panel" id="item-form" hidden style="max-width:300px">
+  <div class="db-form-popup db-quarter db-panel" id="item-form" hidden style="max-width:300px; min-width:300px">
     <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
       <p>
         <label>Filename</label>
@@ -29,8 +29,13 @@
   </div>
 
   <script>
-  function open_add_form() {
-    document.getElementById("item-form").style.display = "block";
+  function toggle_add_form() {
+    item_form = document.getElementById('item-form');
+    if (item_form.style.display == 'block') {
+      item_form.style.display = 'none';
+    } else {
+      item_form.style.display = 'block';
+    }
   }
   </script>
 
