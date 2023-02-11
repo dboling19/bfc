@@ -16,10 +16,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DirectoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Directory::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+      parent::__construct($registry, Directory::class);
+  }
 
     public function save(Directory $entity, bool $flush = false): void
     {

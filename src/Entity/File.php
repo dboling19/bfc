@@ -19,7 +19,7 @@ class File
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255)]
     private ?string $size = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -31,13 +31,13 @@ class File
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_modified = null;
 
-    #[ORM\ManyToMany(targetEntity: FileDir::class, mappedBy: 'file_id')]
-    private Collection $dirFiles;
+    #[ORM\ManyToOne(inversedBy: 'file')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Directory $directory = null;
 
-    public function __construct()
-    {
-        $this->dirFiles = new ArrayCollection();
-    }
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_trashed = null;
+    
 
     public function getId(): ?int
     {
@@ -104,30 +104,28 @@ class File
         return $this;
     }
 
-    /**
-     * @return Collection<int, FileDir>
-     */
-    public function getDirFiles(): Collection
+    public function getDirectory(): ?Directory
     {
-        return $this->dirFiles;
+        return $this->directory;
     }
 
-    public function addDirFile(FileDir $dirFile): self
+    public function setDirectory(?Directory $directory): self
     {
-        if (!$this->dirFiles->contains($dirFile)) {
-            $this->dirFiles->add($dirFile);
-            $dirFile->addFileId($this);
-        }
+        $this->directory = $directory;
 
         return $this;
     }
 
-    public function removeDirFile(FileDir $dirFile): self
+    public function getDateTrashed(): ?\DateTimeInterface
     {
-        if ($this->dirFiles->removeElement($dirFile)) {
-            $dirFile->removeFileId($this);
-        }
+        return $this->date_trashed;
+    }
+
+    public function setDateTrashed(?\DateTimeInterface $date_trashed): self
+    {
+        $this->date_trashed = $date_trashed;
 
         return $this;
     }
+
 }
