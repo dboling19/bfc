@@ -13,11 +13,11 @@
           <th class='db-padding-small'>Date Modified</th>
           <th class='db-padding-small'>Filesize</th>
         </tr>
-        {% for row in files %}
+        {% for file in files %}
           <tr>
-          <td class='db-table-row'><a href="{{ path('home', {id: row.id}) }}">{{ row.name }}</a></td>
-          <td class='db-table-row'>{{ row.dateModified|format_datetime('medium', 'short') }}</td>
-          <td class='db-table-row'>{{ row.size }}</td>
+          <td class='db-table-row'><a href="{{ path('home', {id: file.id}) }}">{{ file.name }}</a></td>
+          <td class='db-table-row'>{{ file.dateModified|format_datetime('medium', 'short') }}</td>
+          <td class='db-table-row'>{{ file.size }}</td>
           </tr>
         {% endfor %}
       </table>
@@ -42,9 +42,10 @@
 
   <script>
     function trash_file(file_id) {
-      result = window.confirm("Really delete file?\nFile will be moved to TRASH");
-      if (result == true) {
-        window.location({{ path(')}})
+      result = window.confirm("Really trash file?\nFile will be moved to TRASH");
+      if (result === true) {
+        const route = "{{ path('trash_file', {file_id: 'file_id_value'})|escape('js') }}".replace('file_id_value', file_id);
+        window.location.replace(route);
       }
     }
 

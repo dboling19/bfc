@@ -21,18 +21,6 @@ class DirectoryRepository extends ServiceEntityRepository
       parent::__construct($registry, Directory::class);
   }
 
-  /**
-  * @return Directory[] Returns an array of Directory objects
-  */
-   public function findHome(): array
-   {
-      return $this->createQueryBuilder('dir')
-        ->andWhere('NOT dir.name like '%trash%'')
-        ->getQuery()
-        ->getResult()
-      ;
-   }
-
     public function save(Directory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

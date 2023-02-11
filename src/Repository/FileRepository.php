@@ -24,6 +24,37 @@ class FileRepository extends ServiceEntityRepository
       parent::__construct($registry, File::class);
   }
 
+  
+  /**
+  * @return File[] Returns an array of File objects
+  */
+  public function findHome(): array
+  {
+     return $this->createQueryBuilder('file')
+        ->leftJoin('file.directory', 'dir')
+        ->andWhere('NOT dir.name like :trash')
+        ->setParameter('trash', '%trash%')
+        ->getQuery()
+        ->getResult()
+      ;
+  }
+
+
+    /**
+  * @return File[] Returns an array of File objects
+  */
+  public function findTrash(): array
+  {
+     return $this->createQueryBuilder('file')
+        ->leftJoin('file.directory', 'dir')
+        ->andWhere('dir.name like :trash')
+        ->setParameter('trash', '%trash%')
+        ->getQuery()
+        ->getResult()
+      ;
+  }
+
+
   public function save(File $entity, bool $flush = false): void
   {
       $this->getEntityManager()->persist($entity);

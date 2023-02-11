@@ -12,26 +12,30 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\HttpFoundation\RequestStack;
 use App\Repository\FileRepository;
 use App\Repository\DirectoryRepository;
-use App\Repository\FileDirRepository;
 use App\Entity\Directory;
 use App\Entity\File;
-use App\Entity\FileDir;
 
 class FileController extends AbstractController
 {
 
-  private $dir;
+  private $root_dir;
+  private $em;
+  private $dir_repo;
+  private $file_repo;
+  private $request_stack;
 
-  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, FileDirRepository $file_dir_repo)
+
+  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
-    $this->home_dir = $params->get('app.home_dir');
-    $this->trash_dir = $params->get('app.trash_dir');
+    $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
-    $this->file_dir_repo = $file_dir_repo;
+    $this->request_stack = $request_stack;
+
   }
 
   /**
@@ -50,14 +54,16 @@ class FileController extends AbstractController
       foreach ($files as $result) {
         $file = new File();
         $params['filename'] .= '.' . $result->getClientOriginalExtension();
+        // retains the file extension and appends to the filename
         $file->setName($params['filename']);
         $file->setSize($this->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
-        $file->setTrash(false);
         $file->setNotes('Test File');
-        $result->move($this->home_dir, $params['filename']);
-
+        $dir = $this->dir_repo->findOneBy(['name' => basename($this->request_stack->getSession()->get('dir'))]);
+        $file->setDirectory($dir);
+        $result->move($this->root_dir . $dir->getName(), $params['filename']);
+        
         $this->em->persist($file);
         $this->em->flush();
 
@@ -65,25 +71,6 @@ class FileController extends AbstractController
     }
     
     return $this->redirectToRoute('home');
-  }
-
-
-  /**
-   * Moves a file to the app trash folder for deletion.
-   * Another function will completely delete the file.
-   * 
-   * @author Daniel Boling
-   */
-  #[Route('/trash', name:'trash_file')]
-  public function move_to_trash(Request $request): Response
-  {
-    if ($params = $request->request->all())
-    {
-      $file = $this->file_repo->find($params['file_id']);
-      $finder = new Finder();
-      $result = $finder->files()->name($file->getName());
-      $result->move($this->trash_dir);
-    }
   }
 
 

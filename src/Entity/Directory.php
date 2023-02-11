@@ -22,13 +22,14 @@ class Directory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
-    #[ORM\ManyToMany(targetEntity: FileDir::class, mappedBy: 'directory_id')]
-    private Collection $fileDirs;
+    #[ORM\OneToMany(mappedBy: 'directory', targetEntity: File::class, orphanRemoval: true)]
+    private Collection $file;
 
     public function __construct()
     {
-        $this->fileDirs = new ArrayCollection();
+        $this->file = new ArrayCollection();
     }
+    
 
     public function getId(): ?int
     {
@@ -60,27 +61,30 @@ class Directory
     }
 
     /**
-     * @return Collection<int, FileDir>
+     * @return Collection<int, file>
      */
-    public function getFileDirs(): Collection
+    public function getFile(): Collection
     {
-        return $this->fileDirs;
+        return $this->file;
     }
 
-    public function addFileDir(FileDir $fileDir): self
+    public function addFile(file $file): self
     {
-        if (!$this->fileDirs->contains($fileDir)) {
-            $this->fileDirs->add($fileDir);
-            $fileDir->addDirectoryId($this);
+        if (!$this->file->contains($file)) {
+            $this->file->add($file);
+            $file->setDirectory($this);
         }
 
         return $this;
     }
 
-    public function removeFileDir(FileDir $fileDir): self
+    public function removeFile(file $file): self
     {
-        if ($this->fileDirs->removeElement($fileDir)) {
-            $fileDir->removeDirectoryId($this);
+        if ($this->file->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getDirectory() === $this) {
+                $file->setDirectory(null);
+            }
         }
 
         return $this;
