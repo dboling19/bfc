@@ -30,7 +30,7 @@ class DisplayController extends AbstractController
 
   public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
-    $this->root_dir = realpath($params->get('app.root_dir'));
+    $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
@@ -47,8 +47,7 @@ class DisplayController extends AbstractController
   public function home(Request $request): Response
   {
 
- 
-    if (!$this->dir_repo->findBy(['name' => $this->root_dir . '/']))
+    if (!$this->dir_repo->findBy(['name' => 'bfc']))
     // if directory does not exist in database create it
     {
       $dir = new Directory();
@@ -75,8 +74,7 @@ class DisplayController extends AbstractController
     {
       $filesystem->mkdir($this->root_dir);
     }
-
-    if (!$filesystem->exists($this->root_dir . '/trash'))
+   if (!$filesystem->exists($this->root_dir . '/trash'))
     {
       $filesystem->mkdir($this->root_dir . '/trash');
     }
