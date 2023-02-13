@@ -62,7 +62,7 @@ class FileController extends AbstractController
         $file->setNotes('Test File');
         $dir = $this->dir_repo->findOneBy(['name' => basename($this->request_stack->getSession()->get('dir'))]);
         $file->setDirectory($dir);
-        $result->move($this->root_dir . $dir->getName(), $params['filename']);
+        $result->move($this->root_dir, $params['filename']);
         
         $this->em->persist($file);
         $this->em->flush();
