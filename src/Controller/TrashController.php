@@ -90,10 +90,10 @@ class TrashController extends AbstractController
       $file->setDateTrashed(new \Datetime('now'));
       $file->setDirectory($this->dir_repo->findOneBy(['name' => 'trash']));
       $finder = new Finder();
-      $finder->in($this->request_stack->getSession()->get('dir'))->files()->name($file->getName());
+      $finder->in($this->request_stack->getSession()->get('dir'))->files()->name($file->getFileName());
       foreach ($finder as $result)
       {
-        rename($result, $this->root_dir . '/trash' . '/' . $file->getName());
+        rename($result, $this->root_dir . '/trash' . '/' .$file->getFileName());
       }
       $this->em->flush();
     }
@@ -117,7 +117,7 @@ class TrashController extends AbstractController
       $file = $this->file_repo->find($params['file_id']);
       $this->em->remove($file);
       $finder = new Finder();
-      $finder->in($this->root_dir . '/trash')->files()->name($file->getName());
+      $finder->in($this->root_dir . '/trash')->files()->name($file->getFileName());
       foreach ($finder as $result)
       {
         unlink($result);

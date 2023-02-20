@@ -1,0 +1,220 @@
+@import "./../../node_modules/nord/src/sass/nord.scss";
+
+
+body {
+  background-color: white;
+  color: black;
+}
+
+tr, td {
+  width: auto;
+  padding: 2px;
+  border-bottom: 1px solid $nord6;
+  text-align: left;
+}
+
+tr:hover {
+  background-color: $nord6!important;
+}
+
+tr:nth-child(odd) {
+  background-color: $nord4;
+}
+
+tr:nth-child(even) {
+  background-color: $nord5;
+}
+
+a.db-button, a.db-bar-item { 
+  text-decoration: none;
+}
+
+.db-left-round {
+  border-radius: 8px 0px 0px 8px;
+}
+
+.db-right-round {
+  border-radius: 0px 8px 8px 0px;
+}
+
+.db-input {
+  padding: 1px;
+  border: 1px solid grey;
+  width: 100%;
+}
+
+.db-button {
+  background-color: $nord5;
+  padding: 4px;
+  color: $nord1;
+  text-align: center;
+}
+
+#navbar .db-button-route {
+  background-color: $nord4;
+  color: $nord1;
+}
+
+.db-button:hover {
+  color: $nord1!important;
+  background-color: $nord4!important;
+}
+
+.db-border {
+  border: 1px solid $nord4;
+}
+
+.db-padding-small {
+  padding: 5px !important;
+}
+
+.db-half {
+  width: 50%;
+}
+
+.db-third {
+  width: 32%;
+}
+
+.db-twothird {
+  width: 65%;
+}
+
+.db-quarter {
+  width: 25%;
+}
+
+.db-threequarter {
+  width: 75%;
+}
+
+.db-max-large {
+  max-width: 1000px;
+}
+
+.db-max-small {
+  max-width: 300px;
+}
+
+.db-container {
+  padding: 0px 10px 0px 10px;
+}
+
+.db-panel {
+  padding: 10px;
+}
+
+.db-left {
+  float: left!important;
+}
+
+.db-right {
+  float: right!important;
+}
+
+.db-bottom {
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+}.db-bottom{
+  bottom:0;
+}
+
+.db-form-popup {
+  background-color: $nord6;
+  display: block;
+  position: fixed;
+  top: 40px;
+  left: 60px;
+}
+
+.db-bar {
+  width: 100%;
+  overflow: hidden;
+  background-color: $nord5;
+}
+
+.db-bar .db-bar-item {
+  padding: 6px;
+  float: left;
+  width: auto;
+  border: none;
+  display: block;
+  outline: 0;
+  color: $nord1;
+}
+
+.db-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+:disabled {
+  border: 1px solid lightgrey;
+}
+
+.db-dark-mode {
+  background-color: $nord0;
+  color: $nord6;
+}
+
+.db-dark-mode .db-button {
+  background-color: $nord2;
+  border: none;
+  padding: 6px;
+  color: $nord6;
+}
+
+.db-dark-mode .db-button:hover {
+  background-color: $nord3!important;
+  color: $nord6!important;
+}
+
+.db-dark-mode #navbar {
+  background-color: $nord1;
+  color: $nord4;
+}
+
+.db-dark-mode #navbar .db-button-route {
+  background-color: $nord3;
+  color: $nord4;
+}
+
+.db-dark-mode tr, td {
+  width: auto;
+  padding: 4px;
+  border-bottom: 1px solid $nord4;
+  text-align: left;
+}
+
+.db-dark-mode tr:hover {
+  background-color: $nord3!important;
+}
+
+.db-dark-mode tr:nth-child(even) {
+  background-color: $nord1;
+}
+
+.db-dark-mode tr:nth-child(odd) {
+  background-color: $nord2;
+}
+
+.db-dark-mode input {
+  background-color: $nord2;
+  color: $nord6;
+}
+
+.db-dark-mode .db-form-popup {
+  background-color: $nord0;
+  color: $nord6;
+  display: hidden;
+  position: fixed;
+  top: 40px;
+  left: 60px;
+}
+
+.db-dark-mode .db-info {
+  background-color: $nord1;
+  color: $nord6;
+
+}

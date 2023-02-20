@@ -9,14 +9,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Repository\FileRepository;
 use App\Repository\DirectoryRepository;
 use App\Entity\Directory;
 use App\Entity\File;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use League\Flysystem\Filesystem;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Service\Uploader;
+use App\Service\Fileinfo;
+
 
 class FileController extends AbstractController
 {
@@ -26,15 +30,19 @@ class FileController extends AbstractController
   private $dir_repo;
   private $file_repo;
   private $request_stack;
+  private $uploader;
 
 
-  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
     $this->request_stack = $request_stack;
+    $this->filesystem = $filesystem;
+    $this->uploader = $uploader;
+    $this->fileinfo = $fileinfo;
 
   }
 
@@ -52,18 +60,21 @@ class FileController extends AbstractController
     {
 
       foreach ($files as $result) {
+
         $file = new File();
-        $params['filename'] .= '.' . $result->getClientOriginalExtension();
-        // retains the file extension and appends to the filename
-        $file->setName($params['filename']);
-        $file->setSize($this->formatBytes($result->getSize()));
+        $file->setName($params['name']);
+        $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
         $file->setNotes('Test File');
         $dir = $this->dir_repo->findOneBy(['name' => basename($this->request_stack->getSession()->get('dir'))]);
         $file->setDirectory($dir);
-        $result->move($this->root_dir, $params['filename']);
-        
+        $file->setMimeType($result->getMimeType() ?? 'application/octet-stream');
+        // setting database info
+
+        $filename = $this->uploader->uploadFile($result, $params['name'], '');
+        $file->setFileName($filename);
+
         $this->em->persist($file);
         $this->em->flush();
 
@@ -73,17 +84,31 @@ class FileController extends AbstractController
     return $this->redirectToRoute('home');
   }
 
+  /**
+   * Download selected file
+   * 
+   * @author Daniel Boling
+   */
+  #[Route('/download/{id}', name: 'download', methods: ['GET'])]
+  public function download_file(int $id, Uploader $uploader): Response
+  {
 
-  public function formatBytes($bytes, $precision = 2) {
-    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $file = $this->file_repo->find($id);
+    $response = new StreamedResponse(function() use ($file, $uploader) {
+      $output_stream = fopen('php://output', 'wb');
+      $file_stream = $uploader->downloadFile($file);
 
-    $bytes = max($bytes, 0);
-    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-    $pow = min($pow, count($units) - 1);
+      stream_copy_to_stream($file_stream, $output_stream);
+    });
+    $response->headers->set('Content-Type', $file->getMimeType());
+    $disposition = HeaderUtils::makeDisposition(
+      HeaderUtils::DISPOSITION_INLINE,
+      $file->getName(),
+    );
+    $response->headers->set('Content-Disposition', $disposition);
+  
 
-    $bytes /= pow(1024, $pow);
-    
-    return round($bytes, $precision) . ' ' . $units[$pow];
+    return $response;
   }
 
 }

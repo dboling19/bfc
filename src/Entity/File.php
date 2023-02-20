@@ -37,6 +37,12 @@ class File
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_trashed = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $fileName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $mime_type = null;
     
 
     public function getId(): ?int
@@ -124,6 +130,30 @@ class File
     public function setDateTrashed(?\DateTimeInterface $date_trashed): self
     {
         $this->date_trashed = $date_trashed;
+
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mime_type;
+    }
+
+    public function setMimeType(string $mime_type): self
+    {
+        $this->mime_type = $mime_type;
 
         return $this;
     }

@@ -2,14 +2,94 @@
 
 
 {% block body %}
-  <div class="w3-bar" style="background-color:#e0e0e0">
-    <a class="w3-button w3-bar-item w3-border w3-padding-small" href="{{ path('home') }}"><b>Home</b></a>
-    <a class="w3-button w3-bar-item w3-border w3-padding-small" onclick="toggle_add_form()"><b>Add File</b></a>
-    <a class="w3-button w3-bar-item w3-border w3-padding-small" href="{{ path('trash_display') }}"><b>Trash</b></a>
+  {% set route_name = app.request.attributes.get('_route')%}
 
+  <div class="db-bar" id="navbar">
+    <a class="db-button db-bar-item" id="home" href="{{ path('home') }}"><b>Home</b></a>
+    <a class="db-button db-bar-item" id="add_file" onclick="toggle_add_form()"><b>Add File</b></a>
+    <a class="db-button db-bar-item" id="trash_display" href="{{ path('trash_display') }}"><b>Trash</b></a>
 
   </div>
+  <div class="db-container db-bottom">
+    <a class="db-button db-left db-right" onclick="toggle_dark_mode()">
+      <img src="{{ asset('build/sun-icon.svg') }}" alt="Dark Mode" id="dark-mode" style="height:50px;width:50px"></img>
+    </a>  
+  </div>
+
   {{ include('forms/add_file_form.html.twig') }}
+
+  <script>
+
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    
+    function checkCookie(cname) {
+      var cookie = getCookie(cname);
+      if (cookie != '') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    if (checkCookie('color-scheme') != true) {
+      var theme = window.matchMedia("(prefers-color-scheme:dark)").matches ? 'dark' : 'light';
+      document.cookie = 'color-scheme=' + theme;
+    }
+
+    window.addEventListener('load', function() {
+      set_light_mode();
+      select_route();
+
+    });
+
+    function toggle_dark_mode() {
+      document.body.classList.toggle('db-dark-mode');
+      document.getElementById('navbar').classList.toggle('db-dark-mode');
+
+      var theme = getCookie('color-scheme');
+      if (theme == 'light') 
+      {
+        document.cookie = 'color-scheme=dark';
+        document.getElementById('dark-mode').src = "{{ asset('build/moon-icon.png') }}";
+
+      } else {
+        document.cookie = 'color-scheme=light';
+        document.getElementById('dark-mode').src = "{{ asset('build/sun-icon.svg') }}";
+
+      }
+    }
+
+
+    function set_light_mode() {
+      var color_scheme = getCookie('color-scheme');
+      if (color_scheme == 'dark') 
+      {
+        document.body.classList.toggle('db-dark-mode');
+        document.getElementById('navbar').classList.toggle('db-dark-mode');
+        document.getElementById('dark-mode').src = "{{ asset('build/moon-icon.png') }}";
+      }
+    }
+
+    function select_route() {
+      const button = document.getElementById({{ route_name|json_encode()|raw }});
+      button.classList.add('db-button-route');
+    }
+
+  </script>
 
 {% endblock %}
 

@@ -6,23 +6,23 @@
   {{ include("navbar.html.twig") }}
 
   <div class="db-container" style="max-width:60%">
-    <div class="db-container w3-grey db-threequarter db-left db-max-large">
-      <table class="w3-table-all">
+    <div class="db-container db-threequarter db-left db-max-large">
+      <table class="db-table">
         <tr>
-          <th class='db-padding-small'>File Name</th>
-          <th class='db-padding-small'>Date Trashed</th>
-          <th class='db-padding-small'>Filesize</th>
+          <th>File Name</th>
+          <th>Date Trashed</th>
+          <th>Filesize</th>
         </tr>
         {% for file in files %}
           <tr>
-          <td class='db-table-row'><a href="{{ path('trash_display', {id: file.id}) }}">{{ file.name }}</a></td>
-          <td class='db-table-row'>{{ file.dateTrashed|format_datetime('medium', 'short') }}</td>
-          <td class='db-table-row'>{{ file.size }}</td>
+          <td><a href="{{ path('trash_display', {id: file.id}) }}">{{ file.name }}</a></td>
+          <td>{{ file.dateTrashed|format_datetime('medium', 'short') }}</td>
+          <td>{{ file.size }}</td>
           </tr>
         {% endfor %}
       </table>
     </div>
-    <div class="db-container db-quarter db-left db-max-small">
+    <div class="db-container db-quarter db-left db-max-small db-info">
       {% if file is not empty %}
       <p class="db-border db-panel">
           <b>Details</b>
@@ -33,7 +33,7 @@
           <br>
           {{ file.dateTrashed|format_datetime('short', 'short') }}
           <br>
-          <button type="button" name="trash_file" onclick="delete_file({{ file.id }})">Delete File</button>
+          <button type="button" class="db-button" name="trash_file" onclick="delete_file({{ file.id }})">Delete File</button>
       </p>
       {% endif %}
     </div>
