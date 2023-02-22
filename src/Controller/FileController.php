@@ -62,11 +62,11 @@ class FileController extends AbstractController
       foreach ($files as $result) {
 
         $file = new File();
-        if (isset($params['filename']) == false || in_array($params['filename'], ['', ' ', null]))
+        if (isset($params['name']) == false || in_array($params['name'], ['', ' ', null]))
         {
           $file->setName($result->getClientOriginalName());
         } else {
-          $file->setName($params['filename']);
+          $file->setName(trim($params['name']));
         }
         $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
