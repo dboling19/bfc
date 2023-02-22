@@ -62,7 +62,12 @@ class FileController extends AbstractController
       foreach ($files as $result) {
 
         $file = new File();
-        $file->setName($params['name']);
+        if (isset($params['filename']) == false || in_array($params['filename'], ['', ' ', null]))
+        {
+          $file->setName($result->getClientOriginalName());
+        } else {
+          $file->setName($params['filename']);
+        }
         $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
@@ -72,7 +77,7 @@ class FileController extends AbstractController
         $file->setMimeType($result->getMimeType() ?? 'application/octet-stream');
         // setting database info
 
-        $filename = $this->uploader->uploadFile($result, $params['name'], '');
+        $filename = $this->uploader->uploadFile($result, $file->getName(), '');
         $file->setFileName($filename);
 
         $this->em->persist($file);
