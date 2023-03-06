@@ -25,12 +25,13 @@ use App\Service\Fileinfo;
 class FileController extends AbstractController
 {
 
-  private $root_dir;
   private $em;
   private $dir_repo;
   private $file_repo;
   private $request_stack;
   private $uploader;
+  private $fileinfo;
+  private $filesystem;
 
 
   public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
