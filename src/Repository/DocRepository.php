@@ -2,36 +2,36 @@
 
 namespace App\Repository;
 
-use App\Entity\File;
+use App\Entity\Doc;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<File>
+ * @extends ServiceEntityRepository<Doc>
  *
- * @method File|null find($id, $lockMode = null, $lockVersion = null)
- * @method File|null findOneBy(array $criteria, array $orderBy = null)
- * @method File[]    findAll()
- * @method File[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Doc|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Doc|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Doc[]    findAll()
+ * @method Doc[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FileRepository extends ServiceEntityRepository
+class DocRepository extends ServiceEntityRepository
 {
 
   private $dir;
 
   public function __construct(ManagerRegistry $registry)
   {
-      parent::__construct($registry, File::class);
+      parent::__construct($registry, Doc::class);
   }
 
   
   /**
-  * @return File[] Returns an array of File objects
+  * @return Doc[] Returns an array of Doc objects
   */
   public function findHome(): array
   {
-     return $this->createQueryBuilder('file')
-        ->leftJoin('file.directory', 'dir')
+     return $this->createQueryBuilder('doc')
+        ->leftJoin('doc.directory', 'dir')
         ->andWhere('NOT dir.name like :trash')
         ->setParameter('trash', '%trash%')
         ->getQuery()
@@ -41,12 +41,12 @@ class FileRepository extends ServiceEntityRepository
 
 
     /**
-  * @return File[] Returns an array of File objects
+  * @return Doc[] Returns an array of Doc objects
   */
   public function findTrash(): array
   {
-     return $this->createQueryBuilder('file')
-        ->leftJoin('file.directory', 'dir')
+     return $this->createQueryBuilder('doc')
+        ->leftJoin('doc.directory', 'dir')
         ->andWhere('dir.name like :trash')
         ->setParameter('trash', '%trash%')
         ->getQuery()
@@ -55,7 +55,7 @@ class FileRepository extends ServiceEntityRepository
   }
 
 
-  public function save(File $entity, bool $flush = false): void
+  public function save(Doc $entity, bool $flush = false): void
   {
       $this->getEntityManager()->persist($entity);
 
@@ -64,7 +64,7 @@ class FileRepository extends ServiceEntityRepository
       }
   }
 
-  public function remove(File $entity, bool $flush = false): void
+  public function remove(Doc $entity, bool $flush = false): void
   {
       $this->getEntityManager()->remove($entity);
 
@@ -74,7 +74,7 @@ class FileRepository extends ServiceEntityRepository
   }
 
 //    /**
-//     * @return File[] Returns an array of File objects
+//     * @return Doc[] Returns an array of Doc objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -88,7 +88,7 @@ class FileRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?File
+//    public function findOneBySomeField($value): ?Doc
 //    {
 //        return $this->createQueryBuilder('f')
 //            ->andWhere('f.exampleField = :val')

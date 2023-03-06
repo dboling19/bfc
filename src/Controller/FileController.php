@@ -10,10 +10,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\RequestStack;
-use App\Repository\FileRepository;
+use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
 use App\Entity\Directory;
-use App\Entity\File;
+use App\Entity\Doc;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use League\Flysystem\Filesystem;
@@ -33,7 +33,7 @@ class FileController extends AbstractController
   private $uploader;
 
 
-  public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
@@ -61,7 +61,7 @@ class FileController extends AbstractController
 
       foreach ($files as $result) {
 
-        $file = new File();
+        $file = new Doc();
         if (isset($params['name']) == false || in_array($params['name'], ['', ' ', null]))
         {
           $file->setName($result->getClientOriginalName());

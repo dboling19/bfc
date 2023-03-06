@@ -22,14 +22,13 @@ class Directory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
-    #[ORM\OneToMany(mappedBy: 'directory', targetEntity: File::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'directory', targetEntity: Doc::class, orphanRemoval: true)]
     private Collection $file;
 
     public function __construct()
     {
         $this->file = new ArrayCollection();
     }
-    
 
     public function getId(): ?int
     {
@@ -61,14 +60,14 @@ class Directory
     }
 
     /**
-     * @return Collection<int, file>
+     * @return Collection<int, Doc>
      */
     public function getFile(): Collection
     {
         return $this->file;
     }
 
-    public function addFile(file $file): self
+    public function addFile(Doc $file): self
     {
         if (!$this->file->contains($file)) {
             $this->file->add($file);
@@ -78,7 +77,7 @@ class Directory
         return $this;
     }
 
-    public function removeFile(file $file): self
+    public function removeFile(Doc $file): self
     {
         if ($this->file->removeElement($file)) {
             // set the owning side to null (unless already changed)

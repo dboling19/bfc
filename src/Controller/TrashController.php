@@ -13,10 +13,10 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
-use App\Repository\FileRepository;
+use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
 use App\Entity\Directory;
-use App\Entity\File;
+use App\Entity\Doc;
 
 
 class TrashController extends AbstractController
@@ -28,7 +28,7 @@ class TrashController extends AbstractController
   private $file_repo;
   private $request_stack;
 
-  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, FileRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
