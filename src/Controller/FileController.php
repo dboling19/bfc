@@ -98,7 +98,6 @@ class FileController extends AbstractController
   #[Route('/download/{id}', name: 'download', methods: ['GET'])]
   public function download_file(int $id, Uploader $uploader): Response
   {
-
     $file = $this->file_repo->find($id);
     $response = new StreamedResponse(function() use ($file, $uploader) {
       $output_stream = fopen('php://output', 'wb');

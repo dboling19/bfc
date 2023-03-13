@@ -43,7 +43,7 @@ class Uploader
 
     if ($resource === false)
     {
-      throw new \Exception(sprintf('Error opening stream for "%s"', $path));
+      throw new \Exception(sprintf('Error opening stream for "%s"', $file));
     }
 
     return $resource;
