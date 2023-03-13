@@ -18,26 +18,36 @@ class DirectoryRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-      parent::__construct($registry, Directory::class);
+    parent::__construct($registry, Directory::class);
   }
 
-    public function save(Directory $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+  public function findAllDirsIn($cwd)
+  {
+    return $this->createQueryBuilder('dir')
+      ->andWhere('dir.name like :cwd')
+      ->setParameter('cwd', $cwd)
+      ->getQuery()
+      ->getResult()
+    ;
+  }
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+  public function save(Directory $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->persist($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
     }
+  }
 
-    public function remove(Directory $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+  public function remove(Directory $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+    if ($flush) {
+      $this->getEntityManager()->flush();
     }
+  }
 
 //    /**
 //     * @return Directory[] Returns an array of Directory objects

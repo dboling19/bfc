@@ -17,6 +17,7 @@ use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
 use App\Entity\Directory;
 use App\Entity\Doc;
+use App\Service\DirectoryHelper;
 
 
 class DisplayController extends AbstractController
@@ -27,13 +28,15 @@ class DisplayController extends AbstractController
   private $dir_repo;
   private $file_repo;
   private $request_stack;
+  private $dir_helper;
 
-  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
+    $this->dir_helper = $dir_helper;
 
     $this->request_stack = $request_stack;
   }
@@ -52,8 +55,8 @@ class DisplayController extends AbstractController
     {
       $dir = new Directory();
       $dir->setName('bfc');
+      $dir->setParent(0);
       $dir->setNotes('Home directory');
-      
       $this->em->persist($dir);
       $this->em->flush();
     }
@@ -62,8 +65,8 @@ class DisplayController extends AbstractController
     {
       $dir = new Directory();
       $dir->setName('trash');
+      $dir->setParent(0);
       $dir->setNotes('Trash Directory');
-
       $this->em->persist($dir);
       $this->em->flush();
     }
@@ -85,19 +88,34 @@ class DisplayController extends AbstractController
 
     $file = null;
     $session = $this->request_stack->getSession();
-    $session->set('dir', $this->root_dir);
+    $session->set('dir', 0);
     // this line will need updated during sub-directory introductions
     // and traversal configurations
 
-    $dir = $session->get('dir');
+    $cwd = $session->get('dir');
     if ($params = $request->query->all())
+    // the page was loaded with params, meaning a file was
+    // selected.  Load file info
     {
       $file = $this->file_repo->find($params['id']);
+      $cwd = $params['dir'];
+    }
 
+    $db_dirs = $this->dir_repo->findAllDirsIn($cwd);
+    $fs_dirs = $this->dir_helper->findAllIn($cwd);
+    foreach ($db_dirs as $db_dir)
+    {
+      foreach ($fs_dirs as $fs_dir)
+      {
+        if ($db_dir != $fs_dir)
+        {
+          $filesystem->mkdir($this->root_dir . $db_dir);
+        }
+      }
     }
 
 
-    $files = $this->file_repo->findHome();
+    $files = $this->file_repo->findAllIn($cwd);
 
 
     return $this->render('displays/home.html.twig', [
@@ -105,4 +123,5 @@ class DisplayController extends AbstractController
       'file' => $file,
     ]);
   }
+  
 }

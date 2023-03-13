@@ -26,14 +26,18 @@ class DocRepository extends ServiceEntityRepository
 
   
   /**
-  * @return Doc[] Returns an array of Doc objects
+  * @return Doc[] Returns an array of Doc objects dependent on 
+  * parent directory
+  * 
   */
-  public function findHome(): array
+  public function findAllIn($cwd): array
   {
      return $this->createQueryBuilder('doc')
         ->leftJoin('doc.directory', 'dir')
         ->andWhere('NOT dir.name like :trash')
+        ->andWhere('dir.parent like :cwd')
         ->setParameter('trash', '%trash%')
+        ->setParameter('cwd', $cwd)
         ->getQuery()
         ->getResult()
       ;
