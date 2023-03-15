@@ -55,17 +55,16 @@ class DisplayController extends AbstractController
     {
       $dir = new Directory();
       $dir->setName('bfc');
-      $dir->setParent(0);
+      $dir->setParent('');
       $dir->setNotes('Home directory');
       $this->em->persist($dir);
       $this->em->flush();
     }
 
-    if (!$this->dir_repo->findBy(['name' => 'trash']))
     {
       $dir = new Directory();
       $dir->setName('trash');
-      $dir->setParent(0);
+      $dir->setParent('');
       $dir->setNotes('Trash Directory');
       $this->em->persist($dir);
       $this->em->flush();
@@ -88,7 +87,7 @@ class DisplayController extends AbstractController
 
     $file = null;
     $session = $this->request_stack->getSession();
-    $session->set('dir', 0);
+    $session->set('dir', '');
     // this line will need updated during sub-directory introductions
     // and traversal configurations
 
@@ -116,7 +115,6 @@ class DisplayController extends AbstractController
 
 
     $files = $this->file_repo->findAllIn($cwd);
-
 
     return $this->render('displays/home.html.twig', [
       'files' => $files,

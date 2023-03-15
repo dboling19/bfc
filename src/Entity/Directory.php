@@ -22,8 +22,8 @@ class Directory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $parent = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'directory', targetEntity: Doc::class, orphanRemoval: true)]
     private Collection $file;
@@ -92,12 +92,12 @@ class Directory
         return $this;
     }
 
-    public function getParent(): ?int
+    public function getParent(): ?string
     {
         return $this->parent;
     }
 
-    public function setParent(?int $parent): self
+    public function setParent(?string $parent): self
     {
         $this->parent = $parent;
 
