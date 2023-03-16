@@ -50,21 +50,20 @@ class DisplayController extends AbstractController
   public function home(Request $request): Response
   {
 
-    if (!$this->dir_repo->findBy(['name' => 'bfc']))
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'home']))
     // if directory does not exist in database create it
     {
       $dir = new Directory();
-      $dir->setName('bfc');
-      $dir->setParent('');
+      $dir->setPath($this->root_dir . 'home');
       $dir->setNotes('Home directory');
       $this->em->persist($dir);
       $this->em->flush();
     }
 
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'trash']))
     {
       $dir = new Directory();
-      $dir->setName('trash');
-      $dir->setParent('');
+      $dir->setPath($this->root_dir . 'trash');
       $dir->setNotes('Trash Directory');
       $this->em->persist($dir);
       $this->em->flush();
@@ -76,9 +75,9 @@ class DisplayController extends AbstractController
     {
       $filesystem->mkdir($this->root_dir);
     }
-   if (!$filesystem->exists($this->root_dir . '/trash'))
+    if (!$filesystem->exists($this->root_dir . 'trash'))
     {
-      $filesystem->mkdir($this->root_dir . '/trash');
+      $filesystem->mkdir($this->root_dir . 'trash');
     }
     // consider above startup checks to ensure
     // directories exist and the system is ready to start
@@ -87,7 +86,7 @@ class DisplayController extends AbstractController
 
     $file = null;
     $session = $this->request_stack->getSession();
-    $session->set('dir', '');
+    $session->set('dir', $this->root_dir . 'home');
     // this line will need updated during sub-directory introductions
     // and traversal configurations
 
@@ -98,19 +97,6 @@ class DisplayController extends AbstractController
     {
       $file = $this->file_repo->find($params['id']);
       $cwd = $params['dir'];
-    }
-
-    $db_dirs = $this->dir_repo->findAllDirsIn($cwd);
-    $fs_dirs = $this->dir_helper->findAllIn($cwd);
-    foreach ($db_dirs as $db_dir)
-    {
-      foreach ($fs_dirs as $fs_dir)
-      {
-        if ($db_dir != $fs_dir)
-        {
-          $filesystem->mkdir($this->root_dir . $db_dir);
-        }
-      }
     }
 
 

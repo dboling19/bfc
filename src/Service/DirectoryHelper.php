@@ -4,19 +4,16 @@ namespace App\Service;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
-use App\Repository\DirectoryRepository;
 
 
 class DirectoryHelper
 {
 
   private $root_dir;
-  private $dir_repo;
 
-  public function __construct(DirectoryRepository $dir_repo, ContainerBagInterface $params)
+  public function __construct(ContainerBagInterface $params)
   {
     $this->root_dir = $params->get('app.root_dir');
-    $this->dir_repo = $dir_repo;
   }
 
   /**
@@ -27,7 +24,7 @@ class DirectoryHelper
   public function findAllIn($cwd)
   {
     $finder = new Finder();
-    $finder->depth(0)->in($this->root_dir . $cwd);
+    $finder->depth(0)->in($cwd);
     if ($dirs = $finder->hasResults())
     {
       $dirs = [];

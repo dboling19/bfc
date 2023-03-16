@@ -21,11 +21,17 @@ class DirectoryRepository extends ServiceEntityRepository
     parent::__construct($registry, Directory::class);
   }
 
-  public function findAllDirsIn($cwd)
+  /**
+   * Required parameter cwd for finding dirs in current dir.  
+   * Optional param name to find duplicate dirs during creation/rename
+   * 
+   * @author Daniel Boling
+   */
+  public function findAllDirsIn(string $cwd, ?string $name = '')
   {
     return $this->createQueryBuilder('dir')
-      ->andWhere('dir.name like :cwd')
-      ->setParameter('cwd', $cwd)
+      ->andWhere('dir.path like :name')
+      ->setParameter('name', $name.'%')
       ->getQuery()
       ->getResult()
     ;

@@ -17,13 +17,10 @@ class Directory
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $path = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'directory', targetEntity: Doc::class, orphanRemoval: true)]
     private Collection $file;
@@ -38,14 +35,14 @@ class Directory
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getpath(): ?string
     {
-        return $this->name;
+        return $this->path;
     }
 
-    public function setName(string $name): self
+    public function setpath(string $path): self
     {
-        $this->name = $name;
+        $this->path = $path;
 
         return $this;
     }
@@ -88,18 +85,6 @@ class Directory
                 $file->setDirectory(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getParent(): ?string
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?string $parent): self
-    {
-        $this->parent = $parent;
 
         return $this;
     }

@@ -47,20 +47,33 @@ class DirectoryController extends AbstractController
    * @author Daniel Boling
    */
   #[Route('/create/dir', name: 'dir_create')]
-  public function create_directory(string $name)
+  public function create_directory(Request $request): Response
   {
+    $params = $request->request->all();
+    $path = $this->root_dir . '\\' . $params['name'];
     $session = $this->request_stack->getSession();
     $cwd = $session->get('dir');
-    $cwd_id = $this->dir_repo->findOneBy(['name' => $name])->getId();
 
     $dir = new Directory();
-    $dir->setName($name);
-    $dir->setParent($cwd);
+    $cwd_dirs = $this->dir_repo->findAllDirsIn($cwd, $path);
+    if (count($cwd_dirs) > 0)
+    // sets the directory name to the count + 1 of found directories
+    {
+      $path .= '(' . count($cwd_dirs) . ')';
+      $dir->setPath($path);
+
+    } else {
+      $dir->setPath($path);
+    }
     $this->em->persist($dir);
     $this->em->flush();
 
     $filesystem = new Filesystem();
-    $filesystem->mkdir($this->root_dir . $cwd . $name);
+    $filesystem->mkdir($path);
+    // will use the given or modified name from above
+
+    return $this->redirectToRoute('home');
+
 
   }
 

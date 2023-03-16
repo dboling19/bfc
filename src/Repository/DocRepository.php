@@ -21,7 +21,7 @@ class DocRepository extends ServiceEntityRepository
 
   public function __construct(ManagerRegistry $registry)
   {
-      parent::__construct($registry, Doc::class);
+    parent::__construct($registry, Doc::class);
   }
 
   
@@ -32,30 +32,27 @@ class DocRepository extends ServiceEntityRepository
   */
   public function findAllIn($cwd): array
   {
-     return $this->createQueryBuilder('doc')
-        ->leftJoin('doc.directory', 'dir')
-        ->andWhere('NOT dir.name like :trash')
-        ->andWhere('dir.parent like :cwd')
-        ->setParameter('trash', '%trash%')
-        ->setParameter('cwd', $cwd)
-        ->getQuery()
-        ->getResult()
-      ;
+    return $this->createQueryBuilder('doc')
+      ->leftJoin('doc.directory', 'dir')
+      ->andWhere('NOT dir.path like :trash')
+      ->setParameter('trash', '%trash%')
+      ->getQuery()
+      ->getResult()
+    ;
   }
 
-
-    /**
+  /**
   * @return Doc[] Returns an array of Doc objects
   */
   public function findTrash(): array
   {
-     return $this->createQueryBuilder('doc')
-        ->leftJoin('doc.directory', 'dir')
-        ->andWhere('dir.name like :trash')
-        ->setParameter('trash', '%trash%')
-        ->getQuery()
-        ->getResult()
-      ;
+    return $this->createQueryBuilder('doc')
+      ->leftJoin('doc.directory', 'dir')
+      ->andWhere('dir.path like :trash')
+      ->setParameter('trash', '%trash%')
+      ->getQuery()
+      ->getResult()
+    ;
   }
 
 
