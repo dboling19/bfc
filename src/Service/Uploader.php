@@ -26,7 +26,7 @@ class Uploader
 
     $stream = fopen($file->getPathname(), 'r');
     $this->filesystem->writeStream(
-      $dir.'/'.$new_filename,
+      basename($dir) . '/' . $new_filename,
       $stream,
     );
     if (is_resource($stream)) 
@@ -37,9 +37,9 @@ class Uploader
     return $new_filename;
   }
 
-  public function downloadFile($file)
+  public function downloadFile($file, $cwd)
   {
-    $resource = $this->filesystem->readStream('/'.$file->getFilename());
+    $resource = $this->filesystem->readStream(basename($cwd) . '/' . $file->getFilename());
 
     if ($resource === false)
     {

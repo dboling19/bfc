@@ -32,6 +32,7 @@ class FileController extends AbstractController
   private $uploader;
   private $fileinfo;
   private $filesystem;
+  private $root_dir;
 
 
   public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
@@ -73,12 +74,14 @@ class FileController extends AbstractController
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
         $file->setNotes('Test File');
-        $dir = $this->dir_repo->findOneBy(['name' => basename($this->request_stack->getSession()->get('dir'))]);
+        $cwd_id = $this->request_stack->getSession()->get('cwd_id');
+        $cwd = $this->request_stack->getSession()->get('cwd');
+        $dir = $this->dir_repo->find($cwd_id);
         $file->setDirectory($dir);
         $file->setMimeType($result->getMimeType() ?? 'application/octet-stream');
         // setting database info
 
-        $filename = $this->uploader->uploadFile($result, $file->getName(), '');
+        $filename = $this->uploader->uploadFile($result, $file->getName(), $cwd);
         $file->setFileName($filename);
 
         $this->em->persist($file);
@@ -99,9 +102,10 @@ class FileController extends AbstractController
   public function download_file(int $id, Uploader $uploader): Response
   {
     $file = $this->file_repo->find($id);
-    $response = new StreamedResponse(function() use ($file, $uploader) {
+    $cwd = $this->request_stack->getSession()->get('cwd');
+    $response = new StreamedResponse(function() use ($file, $uploader, $cwd) {
       $output_stream = fopen('php://output', 'wb');
-      $file_stream = $uploader->downloadFile($file);
+      $file_stream = $uploader->downloadFile($file, $cwd);
 
       stream_copy_to_stream($file_stream, $output_stream);
     });

@@ -32,10 +32,13 @@ class DocRepository extends ServiceEntityRepository
   */
   public function findAllIn($cwd): array
   {
+    if ((int)$cwd == 0)
+    {
+      $cwd = '';
+    }
     return $this->createQueryBuilder('doc')
-      ->leftJoin('doc.directory', 'dir')
-      ->andWhere('NOT dir.path like :trash')
-      ->setParameter('trash', '%trash%')
+      ->andWhere('doc.directory = :cwd')
+      ->setParameter('cwd', $cwd)
       ->getQuery()
       ->getResult()
     ;

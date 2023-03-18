@@ -9,33 +9,41 @@
     <div class="db-threequarter db-left db-max-large">
       <table class="db-table">
         <tr>
-          <th>File Name</th>
+          <th style="padding-left:8px">File Name</th>
           <th>Date Modified</th>
           <th>Filesize</th>
         </tr>
-        {% for file in files %}
+        {% for result in results %}
           <tr>
-          <td><a href="{{ path('home', {id: file.id}) }}">{{ file.name }}</a></td>
-          <td>{{ file.dateModified|format_datetime('medium', 'short') }}</td>
-          <td>{{ file.size }}</td>
+            <td style="padding-left:8px"><a href="{{ path('home', {id: result.id}) }}">{{ result.name }}</a></td>
+            <td>
+              {% if result.dateModified is defined %}
+                {{ result.dateModified|format_datetime('medium', 'short') }}
+              {% endif %}
+            </td>
+            <td>
+              {% if result.size is defined %}
+                {{ result.size }}
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </table>
     </div>
     <div class="db-container db-quarter db-left db-max-small">
-      {% if file is not empty %}
+      {% if entity is not empty %}
         <p class="db-border db-panel db-info">
           <b>Details</b>
           <br>
-          {{ file.name }}
+          {{ entity.name }}
           <br>
-          {{ file.size }}
+          {{ entity.size }}
           <br>
-          {{ file.dateModified|format_datetime('short', 'short') }}
+          {{ entity.dateModified|format_datetime('short', 'short') }}
           <br>
-          <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: file.id}) }}'">Download</a>
+          <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'">Download</a>
           <br>
-          <button type="button" class="db-button" name="trash_file" onclick="trash_file({{ file.id }})">Trash File</button>
+          <button type="button" class="db-button" name="trash_file" onclick="trash_file({{ entity.id }})">Trash File</button>
         </p>
       {% endif %}
     </div>
@@ -43,7 +51,7 @@
 
 
   <script>
-    function trash_file(file_id) {
+    function trash_file(entity_id) {
       result = window.confirm("Really trash file?\nFile will be moved to TRASH");
       if (result === true) {
         const route = "{{ path('trash_file', {file_id: 'file_id_value'})|escape('js') }}".replace('file_id_value', file_id);

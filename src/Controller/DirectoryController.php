@@ -50,26 +50,32 @@ class DirectoryController extends AbstractController
   public function create_directory(Request $request): Response
   {
     $params = $request->request->all();
-    $path = $this->root_dir . '\\' . $params['name'];
-    $session = $this->request_stack->getSession();
-    $cwd = $session->get('dir');
+    $name = $params['name'];
+    $cwd = $this->request_stack->getSession()->get('cwd');
+    $cwd_id = $this->request_stack->getSession()->get('cwd_id');
+    // dd(basename($cwd) . '/' . $name);
 
     $dir = new Directory();
-    $cwd_dirs = $this->dir_repo->findAllDirsIn($cwd, $path);
-    if (count($cwd_dirs) > 0)
+    $dup_cwd_dirs = $this->dir_repo->findAllIn($cwd, $cwd . $name);
+    $db_cwd = $this->dir_repo->find($cwd_id);
+    if (count($dup_cwd_dirs) > 0)
     // sets the directory name to the count + 1 of found directories
     {
-      $path .= '(' . count($cwd_dirs) . ')';
-      $dir->setPath($path);
+      $name .= '(' . count($dup_cwd_dirs) . ')';
+      $dir->setPath($cwd . $name);
+      $dir->setName($name);
+      $dir->setParent($db_cwd);
 
     } else {
-      $dir->setPath($path);
+      $dir->setPath($cwd . $name);
+      $dir->setName($name);
+      $dir->setParent($db_cwd);
     }
     $this->em->persist($dir);
     $this->em->flush();
 
     $filesystem = new Filesystem();
-    $filesystem->mkdir($path);
+    $filesystem->mkdir($cwd . $name);
     // will use the given or modified name from above
 
     return $this->redirectToRoute('home');

@@ -27,11 +27,15 @@ class DirectoryRepository extends ServiceEntityRepository
    * 
    * @author Daniel Boling
    */
-  public function findAllDirsIn(string $cwd, ?string $name = '')
+  public function findAllIn(string $cwd, ?string $name = '')
   {
+    if ((int)$cwd == 0)
+    {
+      $cwd = '';
+    }
     return $this->createQueryBuilder('dir')
-      ->andWhere('dir.path like :name')
-      ->setParameter('name', $name.'%')
+      ->andWhere('dir.parent = :cwd')
+      ->setParameter('cwd', $cwd)
       ->getQuery()
       ->getResult()
     ;

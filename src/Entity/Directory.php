@@ -16,8 +16,11 @@ class Directory
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $path = null;
+
+    #[ORM\Column]
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
@@ -25,9 +28,18 @@ class Directory
     #[ORM\OneToMany(mappedBy: 'directory', targetEntity: Doc::class, orphanRemoval: true)]
     private Collection $file;
 
+    #[ORM\ManyToOne(inversedBy: 'subdirectories')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Directory $parent;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Directory::class)]
+    private Collection $subdirectories;
+    
+
     public function __construct()
     {
         $this->file = new ArrayCollection();
+        $this->subdirectories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -35,12 +47,12 @@ class Directory
         return $this->id;
     }
 
-    public function getpath(): ?string
+    public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setpath(string $path): self
+    public function setPath(string $path): self
     {
         $this->path = $path;
 
@@ -83,6 +95,60 @@ class Directory
             // set the owning side to null (unless already changed)
             if ($file->getDirectory() === $this) {
                 $file->setDirectory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Directory>
+     */
+    public function getSubdirectories(): Collection
+    {
+        return $this->subdirectories;
+    }
+
+    public function addSubdirectory(Directory $subdirectory): self
+    {
+        if (!$this->subdirectories->contains($subdirectory)) {
+            $this->subdirectories->add($subdirectory);
+            $subdirectory->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubdirectory(Directory $subdirectory): self
+    {
+        if ($this->subdirectories->removeElement($subdirectory)) {
+            // set the owning side to null (unless already changed)
+            if ($subdirectory->getParent() === $this) {
+                $subdirectory->setParent(null);
             }
         }
 

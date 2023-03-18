@@ -50,20 +50,22 @@ class DisplayController extends AbstractController
   public function home(Request $request): Response
   {
 
-    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'home']))
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'home/']))
     // if directory does not exist in database create it
     {
       $dir = new Directory();
-      $dir->setPath($this->root_dir . 'home');
+      $dir->setPath($this->root_dir . 'home/');
+      $dir->setName('Home');
       $dir->setNotes('Home directory');
       $this->em->persist($dir);
       $this->em->flush();
     }
 
-    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'trash']))
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'trash/']))
     {
       $dir = new Directory();
-      $dir->setPath($this->root_dir . 'trash');
+      $dir->setPath($this->root_dir . 'trash/');
+      $dir->setName('Trash');
       $dir->setNotes('Trash Directory');
       $this->em->persist($dir);
       $this->em->flush();
@@ -84,27 +86,36 @@ class DisplayController extends AbstractController
     // everything past here is actual functionality
 
 
-    $file = null;
+    $entity = null;
     $session = $this->request_stack->getSession();
-    $session->set('dir', $this->root_dir . 'home');
+    $cwd = $this->root_dir . 'home/';
+    if ($cwd_id = $this->dir_repo->findOneBy(['path' => $cwd]))
+    {
+      $cwd_id = $cwd_id->getId();
+    }
+    // in place until route handling is implemented
+    $session->set('cwd', $cwd);
+    $session->set('cwd_id', $cwd_id);
     // this line will need updated during sub-directory introductions
     // and traversal configurations
 
-    $cwd = $session->get('dir');
+    $cwd = $session->get('cwd');
+    // dd($cwd);
     if ($params = $request->query->all())
     // the page was loaded with params, meaning a file was
     // selected.  Load file info
     {
-      $file = $this->file_repo->find($params['id']);
-      $cwd = $params['dir'];
+      $entity = $this->file_repo->find($params['id']);
+      // $cwd = $params['dir'];
     }
 
-
-    $files = $this->file_repo->findAllIn($cwd);
+    $file_results = $this->file_repo->findAllIn($cwd_id);
+    $dir_results = $this->dir_repo->findAllIn($cwd_id);
+    $results = array_merge($file_results, $dir_results);
 
     return $this->render('displays/home.html.twig', [
-      'files' => $files,
-      'file' => $file,
+      'results' => $results,
+      'entity' => $entity,
     ]);
   }
   

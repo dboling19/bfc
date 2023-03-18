@@ -9,15 +9,15 @@
     <div class="db-threequarter db-left db-max-large">
       <table class="db-table">
         <tr>
-          <th>File Name</th>
+          <th style="padding-left:8px">File Name</th>
           <th>Date Trashed</th>
           <th>Filesize</th>
         </tr>
         {% for file in files %}
           <tr>
-          <td><a href="{{ path('trash_display', {id: file.id}) }}">{{ file.name }}</a></td>
-          <td>{{ file.dateTrashed|format_datetime('medium', 'short') }}</td>
-          <td>{{ file.size }}</td>
+            <td style="padding-left:8px"><a href="{{ path('trash_display', {id: file.id}) }}">{{ file.name }}</a></td>
+            <td>{{ file.dateTrashed|format_datetime('medium', 'short') }}</td>
+            <td>{{ file.size }}</td>
           </tr>
         {% endfor %}
       </table>

@@ -2,27 +2,27 @@
 
 
 body {
-  background-color: white;
-  color: black;
+  background-color: $nord6;
+  color: $nord1;
 }
 
 tr, td {
   width: auto;
   padding: 2px;
-  border-bottom: 1px solid $nord6;
+  border-bottom: 1px solid $nord3;
   text-align: left;
 }
 
 tr:hover {
-  background-color: $nord6!important;
+  background-color: white!important;
 }
 
 tr:nth-child(odd) {
-  background-color: $nord4;
+  background-color: $nord5;
 }
 
 tr:nth-child(even) {
-  background-color: $nord5;
+  background-color: $nord4;
 }
 
 a.db-button, a.db-bar-item { 
