@@ -25,6 +25,9 @@ class Directory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_trashed = null;
+    
     #[ORM\OneToMany(mappedBy: 'directory', targetEntity: Doc::class, orphanRemoval: true)]
     private Collection $file;
 
@@ -151,6 +154,18 @@ class Directory
                 $subdirectory->setParent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateTrashed(): ?\DateTimeInterface
+    {
+        return $this->date_trashed;
+    }
+
+    public function setDateTrashed(?\DateTimeInterface $date_trashed): self
+    {
+        $this->date_trashed = $date_trashed;
 
         return $this;
     }

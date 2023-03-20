@@ -62,12 +62,12 @@ class DirectoryController extends AbstractController
     // sets the directory name to the count + 1 of found directories
     {
       $name .= '(' . count($dup_cwd_dirs) . ')';
-      $dir->setPath($cwd . $name);
+      $dir->setPath($cwd . strtolower($name));
       $dir->setName($name);
       $dir->setParent($db_cwd);
 
     } else {
-      $dir->setPath($cwd . $name);
+      $dir->setPath($cwd . strtolower($name));
       $dir->setName($name);
       $dir->setParent($db_cwd);
     }

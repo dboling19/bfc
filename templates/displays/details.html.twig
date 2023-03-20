@@ -1,0 +1,74 @@
+{% block body %}
+{% set route_name = app.request.attributes.get('_route')%}
+<div class="db-container db-quarter db-left db-max-small">
+  {% if entity is not empty %}
+    <p class="db-border db-panel db-info">
+      <b>Details</b>
+      <br>
+      {{ entity.name }}
+      <br>
+      {% if entity.size is defined %}
+        {{ entity.size }}
+      {% endif %}
+      <br>
+      {% if entity.dateModified is defined %}
+        {{ entity.dateModified|format_datetime('medium', 'short') }}
+      {% endif %}
+      <br>
+      <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'">Download</button>
+      <br>
+      {% if route_name == 'trash_display' %}
+        {% if entity.path is defined %}
+          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button>
+        {% else %}
+          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button>
+        {% endif %}
+      {% else %}
+        {% if entity.path is defined %}
+          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button>
+        {% else %}
+          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button>
+        {% endif %}
+      {% endif %}
+    </p>
+  {% endif %}
+</div>
+
+
+<script>
+  function trash_entity(entity_id, type) {
+    if (type == 'dir')
+    {
+      result = window.confirm("Really trash folder?\nFolder and contents will be moved to TRASH");
+      if (result === true) {
+        const route = "{{ path('trash_entity', {entity_id: 'entity_id_value', type: 'dir'})|escape('js') }}".replace('entity_id_value', entity_id);
+        window.location.replace(route);
+      }
+    } else {
+      result = window.confirm("Really trash file?\nFile will be moved to TRASH");
+      if (result === true) {
+        const route = "{{ path('trash_entity', {entity_id: 'entity_id_value', type: 'file'})|escape('js') }}".replace('entity_id_value', entity_id);
+        window.location.replace(route);
+      }
+    }
+  }
+
+  function delete_entity(entity_id, type) {
+    if (type == 'dir')
+    {
+      result = window.confirm("Really DELETE folder?\nFolder, contents and related data will be DELETED PERMANENTLY");
+      if (result === true) {
+        const route = "{{ path('delete_entity', {entity_id: 'entity_id_value', type: 'dir'})|escape('js') }}".replace('entity_id_value', entity_id);
+        window.location.replace(route);
+      }
+    } else {
+      result = window.confirm("Really DELETE file?\File and related data will be DELETED PERMANENTLY");
+      if (result === true) {
+        const route = "{{ path('delete_entity', {entity_id: 'entity_id_value', type: 'file'})|escape('js') }}".replace('entity_id_value', entity_id);
+        window.location.replace(route);
+      }
+    }
+  }
+
+</script>
+{% endblock %}

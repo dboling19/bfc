@@ -100,13 +100,18 @@ class DisplayController extends AbstractController
     // and traversal configurations
 
     $cwd = $session->get('cwd');
-    // dd($cwd);
     if ($params = $request->query->all())
     // the page was loaded with params, meaning a file was
     // selected.  Load file info
     {
-      $entity = $this->file_repo->find($params['id']);
-      // $cwd = $params['dir'];
+
+      if ($type = $params['type'] == 'dir')
+      {
+        $entity = $this->dir_repo->find($params['id']);
+      } elseif ($type = $params['type'] == 'file')
+      {
+        $entity = $this->file_repo->find($params['id']);
+      }
     }
 
     $file_results = $this->file_repo->findAllIn($cwd_id);

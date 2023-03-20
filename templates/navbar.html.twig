@@ -1,6 +1,4 @@
 {% extends 'base.html.twig' %}
-
-
 {% block body %}
   {% set route_name = app.request.attributes.get('_route')%}
 
@@ -13,7 +11,7 @@
   </div>
   <div class="db-container db-bottom">
     <a class="db-button db-left db-right" onclick="toggle_dark_mode()">
-      <img src="{{ asset('build/sun-icon.svg') }}" alt="Dark Mode" id="dark-mode" style="height:50px;width:50px"></img>
+      <img src="{{ asset('build/sun-icon.svg') }}" alt="Dark Mode" id="dark-mode" style="height:35px;width:35px"></img>
     </a>  
   </div>
 
