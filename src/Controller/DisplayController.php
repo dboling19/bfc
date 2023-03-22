@@ -77,6 +77,11 @@ class DisplayController extends AbstractController
     {
       $filesystem->mkdir($this->root_dir);
     }
+    if (!$filesystem->exists($this->root_dir . 'home'))
+    // if the system dir does not exist, create it
+    {
+      $filesystem->mkdir($this->root_dir . 'home');
+    }
     if (!$filesystem->exists($this->root_dir . 'trash'))
     {
       $filesystem->mkdir($this->root_dir . 'trash');
