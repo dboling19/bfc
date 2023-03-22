@@ -3,7 +3,7 @@
   {% set route_name = app.request.attributes.get('_route')%}
 
   <div class="db-bar" id="navbar">
-    <a class="db-button db-bar-item" id="home" href="{{ path('home') }}"><b>Home</b></a>
+    <a class="db-button db-bar-item" id="home" href="{{ path('folder_display') }}"><b>Home</b></a>
     <a class="db-button db-bar-item" id="add_file" onclick="toggle_add_file_form()"><b>Add File</b></a>
     <a class="db-button db-bar-item" id="add_dir" onclick="toggle_add_dir_form()"><b>Add Directory</b></a>
     <a class="db-button db-bar-item" id="trash_display" href="{{ path('trash_display') }}"><b>Trash</b></a>

@@ -46,10 +46,58 @@ class DisplayController extends AbstractController
    * 
    * @author Daniel Boling
    */
-  #[Route('/', name: 'home')]
-  public function home(Request $request): Response
+  #[Route('/', name: 'folder_display')]
+  public function folder_display(Request $request): Response
   {
+    $this->check_dirs();
 
+    $entity = null;
+    $session = $this->request_stack->getSession();
+    $cwd = $this->root_dir . 'home/';
+    $session->set('cwd', $cwd);
+
+    if ($params = $request->query->all())
+    // the page was loaded with params, meaning a file was
+    // selected.  Load file info
+    {
+
+      if (isset($params['type']) && $params['type'] == 'dir' && $params['id'])
+      {
+        $entity = $this->dir_repo->find($params['id']);
+      } elseif ($id = $params['id']) {
+        $dir = $this->dir_repo->find($id);
+        $session->set('cwd', $dir->getPath());
+      } elseif ($type = $params['type'] == 'file') {
+        $entity = $this->file_repo->find($params['id']);
+      }
+    }
+    $cwd = $session->get('cwd'); 
+    if ($cwd_id = $this->dir_repo->findOneBy(['path' => $cwd]))
+    {
+      $session->set('cwd_id', $cwd_id);
+      $cwd_id = $cwd_id->getId();
+    }
+
+    $file_results = $this->file_repo->findAllIn($cwd_id);
+    $dir_results = $this->dir_repo->findAllIn($cwd_id);
+    $results = array_merge($file_results, $dir_results);
+
+    return $this->render('displays/home.html.twig', [
+      'results' => $results,
+      'entity' => $entity,
+    ]);
+  }
+
+
+  /**
+   * Runs checks on database and root folder to ensure
+   * correct base directories exist.  This may not
+   * be needed later, but is helpful during development
+   * 
+   * @author Daniel Boling
+   */
+  private function check_dirs()
+  {
     if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'home/']))
     // if directory does not exist in database create it
     {
@@ -89,44 +137,6 @@ class DisplayController extends AbstractController
     // consider above startup checks to ensure
     // directories exist and the system is ready to start
     // everything past here is actual functionality
-
-
-    $entity = null;
-    $session = $this->request_stack->getSession();
-    $cwd = $this->root_dir . 'home/';
-    if ($cwd_id = $this->dir_repo->findOneBy(['path' => $cwd]))
-    {
-      $cwd_id = $cwd_id->getId();
-    }
-    // in place until route handling is implemented
-    $session->set('cwd', $cwd);
-    $session->set('cwd_id', $cwd_id);
-    // this line will need updated during sub-directory introductions
-    // and traversal configurations
-
-    $cwd = $session->get('cwd');
-    if ($params = $request->query->all())
-    // the page was loaded with params, meaning a file was
-    // selected.  Load file info
-    {
-
-      if ($type = $params['type'] == 'dir')
-      {
-        $entity = $this->dir_repo->find($params['id']);
-      } elseif ($type = $params['type'] == 'file')
-      {
-        $entity = $this->file_repo->find($params['id']);
-      }
-    }
-
-    $file_results = $this->file_repo->findAllIn($cwd_id);
-    $dir_results = $this->dir_repo->findAllIn($cwd_id);
-    $results = array_merge($file_results, $dir_results);
-
-    return $this->render('displays/home.html.twig', [
-      'results' => $results,
-      'entity' => $entity,
-    ]);
   }
   
 }

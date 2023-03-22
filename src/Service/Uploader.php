@@ -26,7 +26,7 @@ class Uploader
 
     $stream = fopen($file->getPathname(), 'r');
     $this->filesystem->writeStream(
-      basename($dir) . '/' . $new_filename,
+      $dir . '/' . $new_filename,
       $stream,
     );
     if (is_resource($stream)) 

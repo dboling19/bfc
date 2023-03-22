@@ -81,6 +81,7 @@ class FileController extends AbstractController
         $file->setMimeType($result->getMimeType() ?? 'application/octet-stream');
         // setting database info
 
+        $cwd = str_replace($this->root_dir, '', $cwd);
         $filename = $this->uploader->uploadFile($result, $file->getName(), $cwd);
         $file->setFileName($filename);
 
@@ -90,7 +91,7 @@ class FileController extends AbstractController
       }
     }
     
-    return $this->redirectToRoute('home');
+    return $this->redirectToRoute('folder_display', ['id' => $cwd_id]);
   }
 
   /**

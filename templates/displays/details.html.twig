@@ -15,19 +15,21 @@
         {{ entity.dateModified|format_datetime('medium', 'short') }}
       {% endif %}
       <br>
-      <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'">Download</button>
-      <br>
+      <span><button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'">Download</button></span>
+
       {% if route_name == 'trash_display' %}
         {% if entity.path is defined %}
-          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button>
+          <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button></span>
+          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('folder_display', {id: entity.id}) }}'">View</button>
         {% else %}
-          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button>
+          <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button></span>
         {% endif %}
       {% else %}
         {% if entity.path is defined %}
-          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button>
+          <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button></span>
+          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('folder_display', {id: entity.id}) }}'">View</button>
         {% else %}
-          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button>
+          <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button></span>
         {% endif %}
       {% endif %}
     </p>

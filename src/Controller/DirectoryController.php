@@ -62,12 +62,12 @@ class DirectoryController extends AbstractController
     // sets the directory name to the count + 1 of found directories
     {
       $name .= '(' . count($dup_cwd_dirs) . ')';
-      $dir->setPath($cwd . strtolower($name));
+      $dir->setPath($cwd . $name);
       $dir->setName($name);
       $dir->setParent($db_cwd);
 
     } else {
-      $dir->setPath($cwd . strtolower($name));
+      $dir->setPath($cwd . $name);
       $dir->setName($name);
       $dir->setParent($db_cwd);
     }
@@ -78,7 +78,7 @@ class DirectoryController extends AbstractController
     $filesystem->mkdir($cwd . $name);
     // will use the given or modified name from above
 
-    return $this->redirectToRoute('home');
+    return $this->redirectToRoute('folder_display', ['id' => $cwd_id]);
 
 
   }

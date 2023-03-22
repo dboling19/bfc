@@ -15,9 +15,9 @@
         <tr>
           <td style="padding-left:8px">
             {% if result.path is defined %}
-              <a href="{{ path('home', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
+              <a href="{{ path('folder_display', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
             {% else %}
-              <a href="{{ path('home', {id: result.id, type: 'file'}) }}">{{ result.name }}</a>
+              <a href="{{ path('folder_display', {id: result.id, type: 'file'}) }}">{{ result.name }}</a>
             {% endif %}
           </td>
           <td>
@@ -37,5 +37,11 @@
   {{ include("displays/details.html.twig") }}
   {# {{ include("context_menu.html.twig") }} #}
 </div>
+
+<script>
+
+
+
+</script>
 
 {% endblock %}

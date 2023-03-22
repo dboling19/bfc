@@ -118,7 +118,7 @@ class TrashController extends AbstractController
       $this->em->flush();
     }
 
-    return $this->redirectToRoute('home');
+    return $this->redirectToRoute('folder_display');
   }
 
 
