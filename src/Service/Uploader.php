@@ -26,7 +26,7 @@ class Uploader
 
     $stream = fopen($file->getPathname(), 'r');
     $this->filesystem->writeStream(
-      $dir.'/'.$new_filename,
+      $dir . '/' . $new_filename,
       $stream,
     );
     if (is_resource($stream)) 
@@ -37,13 +37,13 @@ class Uploader
     return $new_filename;
   }
 
-  public function downloadFile($file)
+  public function downloadFile($file, $cwd)
   {
-    $resource = $this->filesystem->readStream('/'.$file->getFilename());
+    $resource = $this->filesystem->readStream($cwd . '/' . $file->getFilename());
 
     if ($resource === false)
     {
-      throw new \Exception(sprintf('Error opening stream for "%s"', $path));
+      throw new \Exception(sprintf('Error opening stream for "%s"', $file));
     }
 
     return $resource;

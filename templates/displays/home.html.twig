@@ -1,56 +1,47 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Home{% endblock %}
-
 {% block body %}
-  {{ include("navbar.html.twig") }}
+{{ include("navbar.html.twig") }}
 
-  <div class="db-container" style="max-width:60%">
-    <div class="db-container db-threequarter db-left db-max-large">
-      <table class="db-table">
+<div style="max-width:60%">
+  <div class="db-threequarter db-left db-max-large">
+    <table class="db-table">
+      <tr>
+        <th style="padding-left:8px">Name</th>
+        <th>Date Modified</th>
+        <th>Filesize</th>
+      </tr>
+      {% for result in results %}
         <tr>
-          <th>File Name</th>
-          <th>Date Modified</th>
-          <th>Filesize</th>
+          <td style="padding-left:8px">
+            {% if result.path is defined %}
+              <a href="{{ path('folder_display', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
+            {% else %}
+              <a href="{{ path('folder_display', {id: result.id, type: 'file'}) }}">{{ result.name }}</a>
+            {% endif %}
+          </td>
+          <td>
+            {% if result.dateModified is defined %}
+              {{ result.dateModified|format_datetime('medium', 'short') }}
+            {% endif %}
+          </td>
+          <td>
+            {% if result.size is defined %}
+              {{ result.size }}
+            {% endif %}
+          </td>
         </tr>
-        {% for file in files %}
-          <tr>
-          <td><a href="{{ path('home', {id: file.id}) }}">{{ file.name }}</a></td>
-          <td>{{ file.dateModified|format_datetime('medium', 'short') }}</td>
-          <td>{{ file.size }}</td>
-          </tr>
-        {% endfor %}
-      </table>
-    </div>
-    <div class="db-container db-quarter db-left db-max-small">
-      {% if file is not empty %}
-      <p class="db-border db-panel db-info">
-          <b>Details</b>
-          <br>
-          {{ file.name }}
-          <br>
-          {{ file.size }}
-          <br>
-          {{ file.dateModified|format_datetime('short', 'short') }}
-          <br>
-          <a type="button" class="db-button" name="download_file" href="{{ path('download', {id: file.id}) }}">Download</a>
-          <br>
-          <button type="button" class="db-button" name="trash_file" onclick="trash_file({{ file.id }})">Trash File</button>
-      </p>
-      {% endif %}
-    </div>
+      {% endfor %}
+    </table>
   </div>
+  {{ include("displays/details.html.twig") }}
+  {# {{ include("context_menu.html.twig") }} #}
+</div>
+
+<script>
 
 
-  <script>
-    function trash_file(file_id) {
-      result = window.confirm("Really trash file?\nFile will be moved to TRASH");
-      if (result === true) {
-        const route = "{{ path('trash_file', {file_id: 'file_id_value'})|escape('js') }}".replace('file_id_value', file_id);
-        window.location.replace(route);
-      }
-    }
 
-  </script>
+</script>
 
 {% endblock %}

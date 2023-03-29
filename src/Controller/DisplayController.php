@@ -17,6 +17,7 @@ use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
 use App\Entity\Directory;
 use App\Entity\Doc;
+use App\Service\DirectoryHelper;
 
 
 class DisplayController extends AbstractController
@@ -27,13 +28,15 @@ class DisplayController extends AbstractController
   private $dir_repo;
   private $file_repo;
   private $request_stack;
+  private $dir_helper;
 
-  public function __construct(ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
+    $this->dir_helper = $dir_helper;
 
     $this->request_stack = $request_stack;
   }
@@ -43,27 +46,77 @@ class DisplayController extends AbstractController
    * 
    * @author Daniel Boling
    */
-  #[Route('/', name: 'home')]
-  public function home(Request $request): Response
+  #[Route('/', name: 'folder_display')]
+  public function folder_display(Request $request): Response
   {
+    $this->check_dirs();
 
-    if (!$this->dir_repo->findBy(['name' => 'bfc']))
+    $entity = null;
+    $session = $this->request_stack->getSession();
+    if ($session->get('cwd') == null)
+    // if the session is new and no cwd is set, set to home.
+    // otherwise retain the current folder
+    {
+      $cwd = $this->root_dir . 'home/';
+      $session->set('cwd', $cwd);
+    }
+
+    if ($params = $request->query->all())
+    // the page was loaded with params, meaning a result was selected
+    {
+      if (isset($params['type']) && $params['type'] == 'dir' && $params['id'])
+      // if selected is a directory
+      {
+        $entity = $this->dir_repo->find($params['id']);
+      } elseif (isset($params['type']) && $params['type'] == 'file' && $params['id']) {
+        // if selected is a file
+        $entity = $this->file_repo->find($params['id']);
+      }
+    }
+    $cwd = $session->get('cwd'); 
+    if ($cwd_id = $this->dir_repo->findOneBy(['path' => $cwd]))
+    {
+      $session->set('cwd_id', $cwd_id);
+      $cwd_id = $cwd_id->getId();
+    }
+
+    $file_results = $this->file_repo->findAllIn($cwd_id);
+    $dir_results = $this->dir_repo->findAllIn($cwd_id);
+    $results = array_merge($file_results, $dir_results);
+
+    return $this->render('displays/home.html.twig', [
+      'results' => $results,
+      'entity' => $entity,
+    ]);
+  }
+
+
+  /**
+   * Runs checks on database and root folder to ensure
+   * correct base directories exist.  This may not
+   * be needed later, but is helpful during development
+   * 
+   * @author Daniel Boling
+   */
+  private function check_dirs()
+  {
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'home/']))
     // if directory does not exist in database create it
     {
       $dir = new Directory();
-      $dir->setName('bfc');
+      $dir->setPath($this->root_dir . 'home/');
+      $dir->setName('Home');
       $dir->setNotes('Home directory');
-      
       $this->em->persist($dir);
       $this->em->flush();
     }
 
-    if (!$this->dir_repo->findBy(['name' => 'trash']))
+    if (!$this->dir_repo->findBy(['path' => $this->root_dir . 'trash/']))
     {
       $dir = new Directory();
-      $dir->setName('trash');
+      $dir->setPath($this->root_dir . 'trash/');
+      $dir->setName('Trash');
       $dir->setNotes('Trash Directory');
-
       $this->em->persist($dir);
       $this->em->flush();
     }
@@ -74,35 +127,18 @@ class DisplayController extends AbstractController
     {
       $filesystem->mkdir($this->root_dir);
     }
-   if (!$filesystem->exists($this->root_dir . '/trash'))
+    if (!$filesystem->exists($this->root_dir . 'home'))
+    // if the system dir does not exist, create it
     {
-      $filesystem->mkdir($this->root_dir . '/trash');
+      $filesystem->mkdir($this->root_dir . 'home');
+    }
+    if (!$filesystem->exists($this->root_dir . 'trash'))
+    {
+      $filesystem->mkdir($this->root_dir . 'trash');
     }
     // consider above startup checks to ensure
     // directories exist and the system is ready to start
     // everything past here is actual functionality
-
-
-    $file = null;
-    $session = $this->request_stack->getSession();
-    $session->set('dir', $this->root_dir);
-    // this line will need updated during sub-directory introductions
-    // and traversal configurations
-
-    $dir = $session->get('dir');
-    if ($params = $request->query->all())
-    {
-      $file = $this->file_repo->find($params['id']);
-
-    }
-
-
-    $files = $this->file_repo->findHome();
-
-
-    return $this->render('displays/home.html.twig', [
-      'files' => $files,
-      'file' => $file,
-    ]);
   }
+  
 }

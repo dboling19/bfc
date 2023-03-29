@@ -18,26 +18,46 @@ class DirectoryRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-      parent::__construct($registry, Directory::class);
+    parent::__construct($registry, Directory::class);
   }
 
-    public function save(Directory $entity, bool $flush = false): void
+  /**
+   * Required parameter cwd for finding dirs in current dir.  
+   * Optional param name to find duplicate dirs during creation/rename
+   * 
+   * @author Daniel Boling
+   */
+  public function findAllIn(string $cwd, ?string $name = '')
+  {
+    if ((int)$cwd == 0)
     {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+      $cwd = '';
     }
+    return $this->createQueryBuilder('dir')
+      ->andWhere('dir.parent = :cwd')
+      ->setParameter('cwd', $cwd)
+      ->getQuery()
+      ->getResult()
+    ;
+  }
 
-    public function remove(Directory $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+  public function save(Directory $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+    if ($flush) {
+      $this->getEntityManager()->flush();
     }
+  }
+
+  public function remove(Directory $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->remove($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
+    }
+  }
 
 //    /**
 //     * @return Directory[] Returns an array of Directory objects

@@ -1,7 +1,7 @@
 
 {% block body %}
   
-  <div class="db-form-popup db-quarter db-panel" id="item-form" hidden style="max-width:300px; min-width:300px">
+  <div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
     <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
       <p>
         <label>Filename</label>
@@ -20,8 +20,8 @@
   </div>
 
   <script>
-  function toggle_add_form() {
-    item_form = document.getElementById('item-form');
+  function toggle_add_file_form() {
+    item_form = document.getElementById('add-item-form');
     if (item_form.style.display == 'block') {
       item_form.style.display = 'none';
     } else {

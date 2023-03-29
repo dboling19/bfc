@@ -1,0 +1,28 @@
+
+{% block body %}
+  
+  <div class="db-form-popup db-quarter db-panel db-border" id="add-dir-form" hidden style="max-width:300px; min-width:300px">
+    <form action="{{ path('dir_create') }}" method="POST" class="db-border db-panel">
+      <p>
+        <label>Directory Name</label>
+        <br>
+        <input type="text" name="name" class="db-input"/>
+      </p>
+      <p>
+        <button type="submit" class="db-button">Create Directory</button>
+      </p>
+    </form>
+  </div>
+
+  <script>
+  function toggle_add_dir_form() {
+    item_form = document.getElementById('add-dir-form');
+    if (item_form.style.display == 'block') {
+      item_form.style.display = 'none';
+    } else {
+      item_form.style.display = 'block';
+    }
+  }
+  </script>
+
+{% endblock %}

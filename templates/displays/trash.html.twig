@@ -1,54 +1,35 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Trash{% endblock %}
-
 {% block body %}
-  {{ include("navbar.html.twig") }}
+{{ include("navbar.html.twig") }}
 
-  <div class="db-container" style="max-width:60%">
-    <div class="db-container db-threequarter db-left db-max-large">
-      <table class="db-table">
+<div style="max-width:60%">
+  <div class="db-threequarter db-left db-max-large">
+    <table class="db-table">
+      <tr>
+        <th style="padding-left:8px">Name</th>
+        <th>Date Trashed</th>
+        <th>Filesize</th>
+      </tr>
+      {% for result in results %}
         <tr>
-          <th>File Name</th>
-          <th>Date Trashed</th>
-          <th>Filesize</th>
+          <td style="padding-left:8px">
+            {% if result.path is defined %}
+              <a href="{{ path('trash_display', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
+            {% else %}
+              <a href="{{ path('trash_display', {id: result.id, type: 'file'}) }}">{{ result.name }}</a>
+            {% endif %}
+          </td>
+          <td>{{ result.dateTrashed|format_datetime('medium', 'short') }}</td>
+          <td>
+            {% if result.size is defined %}
+              {{ result.size }}
+            {% endif %}
+          </td>
         </tr>
-        {% for file in files %}
-          <tr>
-          <td><a href="{{ path('trash_display', {id: file.id}) }}">{{ file.name }}</a></td>
-          <td>{{ file.dateTrashed|format_datetime('medium', 'short') }}</td>
-          <td>{{ file.size }}</td>
-          </tr>
-        {% endfor %}
-      </table>
-    </div>
-    <div class="db-container db-quarter db-left db-max-small db-info">
-      {% if file is not empty %}
-      <p class="db-border db-panel">
-          <b>Details</b>
-          <br>
-          {{ file.name }}
-          <br>
-          {{ file.size }}
-          <br>
-          {{ file.dateTrashed|format_datetime('short', 'short') }}
-          <br>
-          <button type="button" class="db-button" name="trash_file" onclick="delete_file({{ file.id }})">Delete File</button>
-      </p>
-      {% endif %}
-    </div>
+      {% endfor %}
+    </table>
   </div>
-
-
-  <script>
-    function delete_file(file_id) {
-      result = window.confirm("Really DELETE file?\nFile and related data will be DELETED PERMANENTLY");
-      if (result === true) {
-        const route = "{{ path('delete_file', {file_id: 'file_id_value'})|escape('js') }}".replace('file_id_value', file_id);
-        window.location.replace(route);
-      }
-    }
-
-  </script>
-
+  {{ include("displays/details.html.twig") }}
+</div>
 {% endblock %}
