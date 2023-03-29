@@ -51,33 +51,34 @@ class DisplayController extends AbstractController
   {
     $this->check_dirs();
 
-    $entity = null;
     $session = $this->request_stack->getSession();
-    if ($session->get('cwd') == null)
+    if ($session->get('cwd') == null || $session->get('cwd') == $this->root_dir . 'trash/' || $request->query->get('home'))
     // if the session is new and no cwd is set, set to home.
     // otherwise retain the current folder
     {
       $cwd = $this->root_dir . 'home/';
+      $cwd_id = $this->dir_repo->findOneBy(['path' => $this->root_dir . 'home/'])->getId();
       $session->set('cwd', $cwd);
+      $session->set('cwd_id', $cwd_id);
     }
 
-    if ($params = $request->query->all())
+    $entity = null;
+    $cwd = $session->get('cwd');
+    $session->set('cwd_id', $this->dir_repo->findOneBy(['path' => $cwd])->getId());
+    $cwd_id = $session->get('cwd_id');
+    $cwd_entity = $this->dir_repo->find($cwd_id);
+
+    if ($request->query->all())
     // the page was loaded with params, meaning a result was selected
     {
-      if (isset($params['type']) && $params['type'] == 'dir' && $params['id'])
+      if ($request->query->get('type') == 'dir' && $request->query->get('id'))
       // if selected is a directory
       {
-        $entity = $this->dir_repo->find($params['id']);
-      } elseif (isset($params['type']) && $params['type'] == 'file' && $params['id']) {
+        $entity = $this->dir_repo->find($request->query->get('id'));
+      } elseif ($request->query->get('type') == 'file' && $request->query->get('id')) {
         // if selected is a file
-        $entity = $this->file_repo->find($params['id']);
+        $entity = $this->file_repo->find($request->query->get('id'));
       }
-    }
-    $cwd = $session->get('cwd'); 
-    if ($cwd_id = $this->dir_repo->findOneBy(['path' => $cwd]))
-    {
-      $session->set('cwd_id', $cwd_id);
-      $cwd_id = $cwd_id->getId();
     }
 
     $file_results = $this->file_repo->findAllIn($cwd_id);
@@ -87,6 +88,7 @@ class DisplayController extends AbstractController
     return $this->render('displays/home.html.twig', [
       'results' => $results,
       'entity' => $entity,
+      'cwd_entity' => $cwd_entity,
     ]);
   }
 

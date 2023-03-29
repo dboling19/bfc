@@ -11,6 +11,13 @@
         <th>Date Modified</th>
         <th>Filesize</th>
       </tr>
+      {% if cwd_entity.parent != null %}
+        <tr style="padding-left:8px">
+          <td>
+            <a href="{{ path('chdir', {id: cwd_entity.parent.id}) }}"><b>..</b></a>
+          </td>
+        </tr>
+      {% endif %}
       {% for result in results %}
         <tr>
           <td style="padding-left:8px">
