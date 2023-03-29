@@ -39,7 +39,7 @@ class Uploader
 
   public function downloadFile($file, $cwd)
   {
-    $resource = $this->filesystem->readStream(basename($cwd) . '/' . $file->getFilename());
+    $resource = $this->filesystem->readStream($cwd . '/' . $file->getFilename());
 
     if ($resource === false)
     {

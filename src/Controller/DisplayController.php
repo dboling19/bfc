@@ -53,21 +53,23 @@ class DisplayController extends AbstractController
 
     $entity = null;
     $session = $this->request_stack->getSession();
-    $cwd = $this->root_dir . 'home/';
-    $session->set('cwd', $cwd);
+    if ($session->get('cwd') == null)
+    // if the session is new and no cwd is set, set to home.
+    // otherwise retain the current folder
+    {
+      $cwd = $this->root_dir . 'home/';
+      $session->set('cwd', $cwd);
+    }
 
     if ($params = $request->query->all())
-    // the page was loaded with params, meaning a file was
-    // selected.  Load file info
+    // the page was loaded with params, meaning a result was selected
     {
-
       if (isset($params['type']) && $params['type'] == 'dir' && $params['id'])
+      // if selected is a directory
       {
         $entity = $this->dir_repo->find($params['id']);
-      } elseif ($id = $params['id']) {
-        $dir = $this->dir_repo->find($id);
-        $session->set('cwd', $dir->getPath());
-      } elseif ($type = $params['type'] == 'file') {
+      } elseif (isset($params['type']) && $params['type'] == 'file' && $params['id']) {
+        // if selected is a file
         $entity = $this->file_repo->find($params['id']);
       }
     }

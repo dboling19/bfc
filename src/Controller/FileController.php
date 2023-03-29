@@ -103,7 +103,9 @@ class FileController extends AbstractController
   public function download_file(int $id, Uploader $uploader): Response
   {
     $file = $this->file_repo->find($id);
-    $cwd = $this->request_stack->getSession()->get('cwd');
+    $cwd_id = $this->request_stack->getSession()->get('cwd_id');
+    $cwd = $this->dir_repo->find($cwd_id)->getPath();
+    $cwd = str_replace($this->root_dir, '', $cwd);
     $response = new StreamedResponse(function() use ($file, $uploader, $cwd) {
       $output_stream = fopen('php://output', 'wb');
       $file_stream = $uploader->downloadFile($file, $cwd);
