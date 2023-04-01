@@ -12,20 +12,29 @@
         <th>Filesize</th>
       </tr>
       {% if cwd_entity.parent != null %}
-        <tr style="padding-left:8px">
+        <tr style="padding-left:8px" onclick="window.location.href='{{ path('chdir', {id: cwd_entity.parent.id}) }}'">
+          <td style="padding-left:8px">
+            <b>. .</b>
+          </td>
           <td>
-            <a href="{{ path('chdir', {id: cwd_entity.parent.id}) }}"><b>..</b></a>
+          </td>
+          <td>
           </td>
         </tr>
       {% endif %}
       {% for result in results %}
-        <tr>
+        {% if result.path is defined %}
+          <tr onclick="window.location.href='{{ path('folder_display', {id: result.id, type: 'dir'}) }}'">
+        {% else %}
+          <tr onclick="window.location.href='{{ path('folder_display', {id: result.id, type: 'file'}) }}'">
+        {% endif %}
           <td style="padding-left:8px">
             {% if result.path is defined %}
-              <a href="{{ path('folder_display', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
+              <i class="fa-regular fa-folder"></i>
             {% else %}
-              <a href="{{ path('folder_display', {id: result.id, type: 'file'}) }}">{{ result.name }}</a>
+              <i class="fa-regular fa-file" style="padding-right:5px"></i>
             {% endif %}
+            {{ result.name }}
           </td>
           <td>
             {% if result.dateModified is defined %}

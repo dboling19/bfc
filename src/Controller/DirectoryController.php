@@ -66,7 +66,7 @@ class DirectoryController extends AbstractController
       $dir->setParent($db_cwd);
 
     } else {
-      $dir->setPath($cwd . $name);
+      $dir->setPath($cwd . $name . '/');
       $dir->setName($name);
       $dir->setParent($db_cwd);
     }

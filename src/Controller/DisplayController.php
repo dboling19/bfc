@@ -85,7 +85,7 @@ class DisplayController extends AbstractController
     $dir_results = $this->dir_repo->findAllIn($cwd_id);
     $results = array_merge($file_results, $dir_results);
 
-    return $this->render('displays/home.html.twig', [
+    return $this->render('displays/display.html.twig', [
       'results' => $results,
       'entity' => $entity,
       'cwd_entity' => $cwd_entity,
