@@ -20,14 +20,14 @@
       {% if route_name == 'trash_display' %}
         {% if entity.path is defined %}
           <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button></span>
-          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('folder_display', {id: entity.id}) }}'">View</button>
+          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
         {% else %}
           <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button></span>
         {% endif %}
       {% else %}
         {% if entity.path is defined %}
           <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button></span>
-          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('folder_display', {id: entity.id}) }}'">View</button>
+          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
         {% else %}
           <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button></span>
         {% endif %}

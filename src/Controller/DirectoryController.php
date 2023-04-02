@@ -53,7 +53,6 @@ class DirectoryController extends AbstractController
     $name = $params['name'];
     $cwd = $this->request_stack->getSession()->get('cwd');
     $cwd_id = $this->request_stack->getSession()->get('cwd_id');
-    // dd(basename($cwd) . '/' . $name);
 
     $dir = new Directory();
     $dup_cwd_dirs = $this->dir_repo->findAllIn($cwd, $cwd . $name);
@@ -67,7 +66,7 @@ class DirectoryController extends AbstractController
       $dir->setParent($db_cwd);
 
     } else {
-      $dir->setPath($cwd . $name);
+      $dir->setPath($cwd . $name . '/');
       $dir->setName($name);
       $dir->setParent($db_cwd);
     }
@@ -79,8 +78,23 @@ class DirectoryController extends AbstractController
     // will use the given or modified name from above
 
     return $this->redirectToRoute('folder_display', ['id' => $cwd_id]);
+  }
 
 
+  /**
+   * Change dir and redirect to folder_display
+   * 
+   * @author Daniel Boling
+   */
+  #[Route('/chdir', name: 'chdir')]
+  public function chdir(Request $request): Response
+  {
+    $session = $this->request_stack->getSession();
+    $session->set('cwd_id', $request->query->get('id'));
+    $session->set('cwd', $this->dir_repo->find($request->query->get('id'))->getPath());
+    $cwd_id = $session->get('cwd_id');
+
+    return $this->redirectToRoute('folder_display', ['id' => $cwd_id]);
   }
 
 }
