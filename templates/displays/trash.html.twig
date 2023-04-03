@@ -12,7 +12,11 @@
         <th>Filesize</th>
       </tr>
       {% for result in results %}
-        <tr>
+        {% if result.path is defined %}
+          <tr onclick="window.location.href='{{ path('trash_display', {id: result.id, type: 'dir'}) }}'">
+        {% else %}
+          <tr onclick="window.location.href='{{ path('trash_display', {id: result.id, type: 'file'}) }}'">
+        {% endif %}
           <td style="padding-left:8px">
             {% if result.path is defined %}
               <a href="{{ path('trash_display', {id: result.id, type: 'dir'}) }}">{{ result.name }}</a>
