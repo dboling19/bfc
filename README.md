@@ -5,8 +5,9 @@ Use BFC to manage and organize your personal files better, easier, and efficient
 
 Plans:
 [x] File display
-[ ] File saving/uploading
+[x] File saving/uploading
 [ ] Tags
-[ ] Custom file names
-[ ] Custom folders
+[x] Custom file names
+[x] Custom folders
+[x] Trash Folder
 [ ] Shortcuts
