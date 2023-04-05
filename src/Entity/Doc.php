@@ -44,6 +44,14 @@ class Doc
     #[ORM\Column(length: 255)]
     private ?string $mime_type = null;
 
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'docs')]
+    private Collection $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +161,33 @@ class Doc
     public function setMimeType(string $mime_type): self
     {
         $this->mime_type = $mime_type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->addDoc($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->removeElement($tag)) {
+            $tag->removeDoc($this);
+        }
 
         return $this;
     }

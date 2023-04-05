@@ -37,12 +37,15 @@ class Directory
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Directory::class)]
     private Collection $subdirectories;
-    
+
+    #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'directories')]
+    private Collection $tags;
 
     public function __construct()
     {
         $this->file = new ArrayCollection();
         $this->subdirectories = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,6 +169,33 @@ class Directory
     public function setDateTrashed(?\DateTimeInterface $date_trashed): self
     {
         $this->date_trashed = $date_trashed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->addDirectory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->removeElement($tag)) {
+            $tag->removeDirectory($this);
+        }
 
         return $this;
     }
