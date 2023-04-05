@@ -28,7 +28,8 @@ Plans:
 * If using NPM, run `npm install`, `npm upgrade`, `npm run dev`.
 * If using Yarn, run `yarn install`, `yarn upgrade`, `yarn dev`.
 * If database changes have been made during fetch, you'll need to update the database.
-  * Run `php bin/console doctrine:database:drop --force`, `php bin/console doctrine:database:create`, and `php bin/console doctrine:schema:create`.
+  * Run `php bin/console doctrine:migrations:migrate`.  Sometimes this does not work correctly, likely due to the database having data in it.  In which case follow below.
+   * Run `php bin/console doctrine:database:drop --force`, `php bin/console doctrine:database:create`, and `php bin/console doctrine:schema:create`.
   * While database migrations would be preferred, I am having issues with Symfony generating them correctly, and most of the time they requre an empty database anyway, so I found little difference.
 * Finally, run `symfony server:start`.  If you do not need/desire to see the logs, append `-d` to run the server as a daemon.  
   * If this is your first symfony project on the system, you may need to run `symfony server:ca:install` first to get CA certificates, as Symfony runs in HTTPS.
