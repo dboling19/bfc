@@ -61,8 +61,8 @@ class FileController extends AbstractController
     // ensures a file and data is submitted
     {
 
-      foreach ($files as $result) {
-
+      foreach ($files['file'] as $result)
+      {
         $file = new Doc();
         if (isset($params['name']) == false || in_array($params['name'], ['', ' ', null]))
         {
