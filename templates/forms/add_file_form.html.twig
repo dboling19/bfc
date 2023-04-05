@@ -1,25 +1,23 @@
-
 {% block body %}
-  
-  <div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
-    <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
-      <p>
-        <label>Filename</label>
-        <br>
-        <input type="text" name="name" class="db-input"/>
-      </p>
-      <p>
-        <label for="file">Select File</label>
-        <br>
-        <input type="file" name="file" required/>
-      </p>
-      <p>
-        <button type="submit" class="db-button">Upload File</button>
-      </p>
-    </form>
-  </div>
+<div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
+  <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
+    <p>
+      <label>Filename</label>
+      <br>
+      <input type="text" name="name" class="db-input"/>
+    </p>
+    <p>
+      <label for="file" class="db-button">Select File</label>
+      <input type="file" name="file" id="file" required hidden/>
+      <span id="file-chosen">No File Chosen</span>
+    </p>
+    <p>
+      <button type="submit" class="db-button">Upload File</button>
+    </p>
+  </form>
+</div>
 
-  <script>
+<script>
   function toggle_add_file_form() {
     item_form = document.getElementById('add-item-form');
     if (item_form.style.display == 'block') {
@@ -28,6 +26,12 @@
       item_form.style.display = 'block';
     }
   }
-  </script>
+
+  const actualBtn = document.getElementById('file');
+  const fileChosen = document.getElementById('file-chosen');
+  actualBtn.addEventListener('change', function(){
+    fileChosen.textContent = this.files[0].name
+  })
+</script>
 
 {% endblock %}
