@@ -23,8 +23,7 @@ Plans:
 * Clone the project with `git clone https://github.com/dboling19/bfc` and enter the directory with `cd <dir>`
 
 ### Needed after every pull, clone, or update.
-* Run `composer install`
-* Run `composer update`
+* Run `composer update`.  This will install and update any required dependencies for the project. 
 * If using NPM, run `npm install`, `npm upgrade`, `npm run dev`.
 * If using Yarn, run `yarn install`, `yarn upgrade`, `yarn dev`.
 * If database changes have been made during fetch, you'll need to update the database.
