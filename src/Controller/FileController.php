@@ -64,16 +64,15 @@ class FileController extends AbstractController
       foreach ($files['file'] as $result)
       {
         $file = new Doc();
-        if (isset($params['name']) == false || in_array($params['name'], ['', ' ', null]))
+        if (!isset($params['name']) || in_array($params['name'], ['', ' ', null]))
         {
-          $file->setName($result->getClientOriginalName());
+          $file->setName(explode('.', $result->getClientOriginalName())[0]);
         } else {
           $file->setName(trim($params['name']));
         }
         $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
-        $file->setNotes('Test File');
         $cwd_id = $this->request_stack->getSession()->get('cwd_id');
         $cwd = $this->request_stack->getSession()->get('cwd');
         $dir = $this->dir_repo->find($cwd_id);

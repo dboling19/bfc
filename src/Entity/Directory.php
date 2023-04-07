@@ -33,7 +33,7 @@ class Directory
 
     #[ORM\ManyToOne(inversedBy: 'subdirectories')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Directory $parent;
+    private ?Directory $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Directory::class)]
     private Collection $subdirectories;

@@ -3,10 +3,16 @@
   {% set route_name = app.request.attributes.get('_route')%}
 
   <div class="db-bar" id="navbar">
-    <a class="db-button db-bar-item" id="folder_display" href="{{ path('folder_display', {home: true}) }}"><b>Drive</b></a>
-    <a class="db-button db-bar-item" id="add_file" onclick="toggle_add_file_form()"><b>Add File</b></a>
-    <a class="db-button db-bar-item" id="add_dir" onclick="toggle_add_dir_form()"><b>Add Folder</b></a>
-    <a class="db-button db-bar-item" id="trash_display" href="{{ path('trash_display') }}"><b>Trash</b></a>
+    <button class="db-button db-bar-item" id="folder_display" onclick="window.location.href='{{ path('folder_display', {home: true}) }}'"><b>Drive</b></button>
+    {% if route_name != 'folder_display' %}
+      <button class="db-button db-bar-item" id="add_file" onclick="toggle_add_file_form()" disabled><b>Add File</b></button>
+      <button class="db-button db-bar-item" id="add_dir" onclick="toggle_add_dir_form()" disabled><b>Add Folder</b></button>
+    {% else %}
+      <button class="db-button db-bar-item" id="add_file" onclick="toggle_add_file_form()"><b>Add File</b></button>
+      <button class="db-button db-bar-item" id="add_dir" onclick="toggle_add_dir_form()"><b>Add Folder</b></button>
+    {% endif %}
+    <button class="db-button db-bar-item" id="tags_display" onclick="window.location.href='{{ path('tags_display') }}'"><b>Tags</b></button>
+    <button class="db-button db-bar-item" id="trash_display" onclick="window.location.href='{{ path('trash_display') }}'"><b>Trash</b></button>
 
   </div>
   <div class="db-container db-bottom">

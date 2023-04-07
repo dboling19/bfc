@@ -128,6 +128,11 @@ a.db-button, a.db-bar-item {
   float: right!important;
 }
 
+.db-center {
+  margin:auto;
+  width:50%;
+}
+
 .db-bottom {
   position: fixed;
   width: 100%;
@@ -163,6 +168,30 @@ a.db-button, a.db-bar-item {
 .db-table {
   border-collapse: collapse;
   width: 100%;
+}
+
+.db-error-message {
+  background-color:#d8dce3;
+  width:200px;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-left:0px;
+  visibility:hidden;
+  border-radius:2px;
+  position:relative;
+}
+
+.db-error-message.db-top-arrow:after {
+  content: " ";
+  position:absolute;
+  left:15px;
+  top:-15px;
+  border-top:none;
+  border-right:10px solid transparent;
+  border-left:10px solid transparent;
+  border-bottom:15px solid #d8dce3;
 }
 
 :disabled {
