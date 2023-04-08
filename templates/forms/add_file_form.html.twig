@@ -1,25 +1,32 @@
-
 {% block body %}
-  
-  <div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
-    <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
-      <p>
-        <label>Filename</label>
-        <br>
-        <input type="text" name="name" class="db-input"/>
-      </p>
-      <p>
-        <label for="file">Select File</label>
-        <br>
-        <input type="file" name="file" required/>
-      </p>
-      <p>
-        <button type="submit" class="db-button">Upload File</button>
-      </p>
-    </form>
-  </div>
+<div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
+  <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
+    <p>
+      <label for="name">Filename</label>
+      <br>
+      <input type="text" name="name" class="db-input"/>
+    </p>
+    <p>
+      <label for="tags">Tags</label>
+      <br>
+      <input type="text" id="tags" class="db-input"/>
+      <input type="text" name="selected_tags" id="selected_tags" hidden/>
+      <span id="tags-list"></span>
+      <p class="db-error-message db-top-arrow" id="error-message"></p>
+    </p>
+    <p>
+      <label for="file" class="db-button">Select File</label>
+      <input type="file" name="file[]" id="file" required hidden multiple/>
+      <br id="file_list_break" hidden>
+      <span id="file-chosen">No File Chosen</span>
+    </p>
+    <p>
+      <button type="submit" class="db-button">Upload File</button>
+    </p>
+  </form>
+</div>
 
-  <script>
+<script>
   function toggle_add_file_form() {
     item_form = document.getElementById('add-item-form');
     if (item_form.style.display == 'block') {
@@ -28,6 +35,88 @@
       item_form.style.display = 'block';
     }
   }
-  </script>
+
+  const actual_btn = document.getElementById('file');
+  const file_chosen = document.getElementById('file-chosen');
+  const tags_field = document.getElementById('tags');
+  actual_btn.addEventListener('change', function(){
+    file_names = [];
+    for (let file of this.files) {
+      file_names.push(file.name);
+    }
+    if (file_names.length > 0)
+    {
+      file_chosen.style.display = 'none';
+      document.getElementById('file_list_break').style.display = 'block';
+      let file_list = document.getElementById('file-chosen');
+      for (let file of file_names) {
+        let file_name = document.createElement("p");
+        file_name.innerText = file;
+        file_list_break.after(file_name);
+      }
+    }
+  });
+
+  var selected_tags = [];
+  const tags = {{ tags|json_encode()|raw }}
+  const tags_list = document.getElementById('tags-list');
+  tags_field.onkeyup = function(event) {
+    if (!['', ' ', null].includes(tags_field.value.toLowerCase().trim()) && event.code == 'Space' && !selected_tags.includes(tags_field.value.toLowerCase().trim()) && tags.includes(tags_field.value.toLowerCase().trim()))
+    {
+      tag_value = tags_field.value.trim();
+      tag_label = document.createElement('span');
+      tag_label.innerText = tag_value;
+      tag_label.classList.add('db-tag-label');
+      tag_label.setAttribute('id', 'tag_label_' + tag_value);
+      tag_label.setAttribute('name', 'selected_tags[]');
+      tag_remove_btn = document.createElement('span');
+      tag_remove_btn.innerText = 'x';
+      tag_remove_btn.classList.add('db-tag-remove-btn');
+      tag_remove_btn.setAttribute('id', 'tag_remove_' + tag_value);
+      tag_remove_btn.setAttribute('onclick', 'remove_tag(this)');
+      tags_list.appendChild(tag_label);
+      tag_label.appendChild(tag_remove_btn);
+
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'hidden';
+      error_message_box.innerHTML = '';
+
+      selected_tags.push(tag_value);
+      selected_tags_field = document.getElementById('selected_tags');
+      selected_tags_field.value = selected_tags;
+      tags_field.value = '';
+    } else if (!['', ' ', null].includes(tags_field.value.toLowerCase().trim()) && event.code == 'Space' && !tags.includes(tags_field.value.toLowerCase().trim()))
+    {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'visible';
+      error_message_box.innerHTML = 'Tag doesn\'t exist';
+    }
+  }
+
+  function remove_tag(tag_remove_btn)
+  {
+    tag_label = tag_remove_btn.parentElement;
+    tag_value = tag_label.innerText.toLowerCase().slice(0, -1);
+    tag_index = selected_tags.indexOf(tag_value);
+    selected_tags.splice(tag_index, 1);
+    selected_tags_field.value = selected_tags;
+    tag_label.remove();
+    tag_remove_btn.remove();
+  }
+
+  var add_item_form = document.getElementById('add-item-form');
+  add_item_form.addEventListener('submit', (event) => {
+    this.preventDefault();
+    if (tags.includes(tags_field.value.toLowerCase()))
+    {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'visible';
+      error_message_box.innerHTML = 'Tag doesn\'t exist';
+    } else {
+      this.submit();
+    }
+  });
+
+</script>
 
 {% endblock %}

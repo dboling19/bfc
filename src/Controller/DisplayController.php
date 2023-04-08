@@ -15,8 +15,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
+use App\Repository\TagRepository;
 use App\Entity\Directory;
 use App\Entity\Doc;
+use App\Entity\Tag;
 use App\Service\DirectoryHelper;
 
 
@@ -27,15 +29,17 @@ class DisplayController extends AbstractController
   private $em;
   private $dir_repo;
   private $file_repo;
+  private $tag_repo;
   private $request_stack;
   private $dir_helper;
 
-  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, TagRepository $tag_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
+    $this->tag_repo = $tag_repo;
     $this->dir_helper = $dir_helper;
 
     $this->request_stack = $request_stack;
@@ -85,10 +89,17 @@ class DisplayController extends AbstractController
     $dir_results = $this->dir_repo->findAllIn($cwd_id);
     $results = array_merge($file_results, $dir_results);
 
+    $tags = $this->tag_repo->findAll();
+    foreach ($tags as $tag) 
+    {
+      $tags_array[] = $tag->getName();
+    }
+
     return $this->render('displays/display.html.twig', [
       'results' => $results,
       'entity' => $entity,
       'cwd_entity' => $cwd_entity,
+      'tags' => $tags_array,
     ]);
   }
 

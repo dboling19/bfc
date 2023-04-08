@@ -2,14 +2,29 @@
 
 
 body {
-  background-color: $nord6;
+  background-color: #f6f8ff;
   color: $nord1;
+}
+
+label .db-button {
+  background-color: #d8dce3;
+  color: $nord6;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+#file-chosen{
+  margin-left: 0.3rem;
+  font-family: sans-serif;
 }
 
 tr, td {
   width: auto;
   padding: 2px;
-  border-bottom: 1px solid $nord3;
+  border-bottom: 1px solid $nord2;
   text-align: left;
 }
 
@@ -44,24 +59,25 @@ a.db-button, a.db-bar-item {
 }
 
 .db-button {
-  background-color: $nord5;
-  padding: 4px;
+  background-color: #d8dce3;
+  padding: 6px;
+  border: none;
   color: $nord1;
   text-align: center;
 }
 
-#navbar .db-button-route {
-  background-color: $nord4;
-  color: $nord1;
-}
-
 .db-button:hover {
   color: $nord1!important;
-  background-color: $nord4!important;
+  background-color: #e0f8ff;
+}
+
+#navbar .db-button-route {
+  background-color: $nord3;
+  color: $nord6;
 }
 
 .db-border {
-  border: 1px solid $nord4;
+  border: 1px solid $nord3;
 }
 
 .db-padding-small {
@@ -112,6 +128,11 @@ a.db-button, a.db-bar-item {
   float: right!important;
 }
 
+.db-center {
+  margin:auto;
+  width:50%;
+}
+
 .db-bottom {
   position: fixed;
   width: 100%;
@@ -121,7 +142,7 @@ a.db-button, a.db-bar-item {
 }
 
 .db-form-popup {
-  background-color: $nord6;
+  background-color: #f6f8ff;
   display: block;
   position: fixed;
   top: 40px;
@@ -131,7 +152,7 @@ a.db-button, a.db-bar-item {
 .db-bar {
   width: 100%;
   overflow: hidden;
-  background-color: $nord5;
+  background-color: #d8dce3;
 }
 
 .db-bar .db-bar-item {
@@ -147,6 +168,57 @@ a.db-button, a.db-bar-item {
 .db-table {
   border-collapse: collapse;
   width: 100%;
+}
+
+.db-error-message {
+  background-color:#d8dce3;
+  width:200px;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-left:0px;
+  visibility:hidden;
+  border-radius:2px;
+  position:relative;
+}
+
+.db-error-message.db-top-arrow:after {
+  content: " ";
+  position:absolute;
+  left:15px;
+  top:-15px;
+  border-top:none;
+  border-right:10px solid transparent;
+  border-left:10px solid transparent;
+  border-bottom:15px solid #d8dce3;
+}
+
+span .db-tag-label {
+  background-color:#e2cdff;
+  width:auto;
+  position:relative;
+  margin-top:10px;
+  margin-right:4px;
+  font-size:10px;
+  padding-left:3px;
+  padding-top:2px;
+  padding-bottom:2px;
+  white-space:nowrap;
+}
+
+.db-tag-remove-btn {
+  background-color:#b4a4cc;
+  position:relative;
+  cursor:pointer;
+  top:0;
+  right:0;
+  padding:2px 4px;
+  margin-left:2px;
+}
+
+.db-tag-remove-btn:hover {
+  background-color:#e1cdff;
 }
 
 :disabled {

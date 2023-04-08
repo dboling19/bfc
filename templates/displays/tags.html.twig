@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}Tags{% endblock %}
+{% block body %}
+{{ include("navbar.html.twig") }}
+<div class="db-border db-left" style="width:20%;max-width:300px">
+  <form action="{{ path('add_tag') }}" id="tag-form"method="POST" class="db-panel">
+    <p>
+      <label for="tag-name">
+        Tag Name
+        <input type="text" class="db-input" name="tag_name" id="tag_name" required/>
+        <p class="db-error-message db-top-arrow" id="error-message"></p>
+      </label>
+    </p>
+    <p class="db-center">
+      <button type="submit" class="db-button">Create Tag</button>
+    </p>
+  </form>
+</div>
+<div style="">
+  <div class="db-threequarter db-left db-max-large">
+    <table class="db-table">
+      <tr>
+        <th style="padding-left:8px">Name</th>
+      </tr>
+      {% for result in results %}
+        <tr>
+          <td style="padding-left:8px">
+            {{ result.name|capitalize }}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<script>
+  const tags = {{ tags|json_encode()|raw }};
+  var tag_name = document.getElementById('tag_name');
+  tag_name.addEventListener('blur', (event) => {
+    if (tags.includes(tag_name.value.toLowerCase()))
+    {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'visible';
+      error_message_box.innerHTML = 'Tag already exists';
+    } else {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'hidden';
+      error_message_box.innerHTML = '';
+    }
+  });
+
+  var tag_form = document.getElementById('tag-form');
+  tag_form.addEventListener('submit', (event) => {
+    form.preventDefault();
+    if (tags.includes(tag_name.value.toLowerCase()))
+    {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'visible';
+      error_message_box.innerHTML = 'Tag already exists';
+    } else {
+      this.submit();
+    }
+  });
+
+</script>
+
+{% endblock %}

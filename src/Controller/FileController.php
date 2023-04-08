@@ -12,8 +12,10 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
+use App\Repository\TagRepository;
 use App\Entity\Directory;
 use App\Entity\Doc;
+use App\Entity\Tag;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use League\Flysystem\Filesystem;
@@ -28,6 +30,7 @@ class FileController extends AbstractController
   private $em;
   private $dir_repo;
   private $file_repo;
+  private $tag_repo;
   private $request_stack;
   private $uploader;
   private $fileinfo;
@@ -35,12 +38,13 @@ class FileController extends AbstractController
   private $root_dir;
 
 
-  public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(Fileinfo $fileinfo, Uploader $uploader, Filesystem $filesystem, ContainerBagInterface $params, ManagerRegistry $doctrine, TagRepository $tag_repo, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
+    $this->tag_repo = $tag_repo;
     $this->request_stack = $request_stack;
     $this->filesystem = $filesystem;
     $this->uploader = $uploader;
@@ -56,24 +60,27 @@ class FileController extends AbstractController
   #[Route('/upload', name: 'file_upload')]
   public function file_upload(Request $request): Response
   {
-
     if (($files = $request->files->all()) && ($params = $request->request->all()))
     // ensures a file and data is submitted
     {
-
-      foreach ($files as $result) {
-
+      // dd($params);
+      foreach ($files['file'] as $result)
+      {
         $file = new Doc();
-        if (isset($params['name']) == false || in_array($params['name'], ['', ' ', null]))
+        if (!isset($params['name']) || in_array($params['name'], ['', ' ', null]))
         {
-          $file->setName($result->getClientOriginalName());
+          $file->setName(explode('.', $result->getClientOriginalName())[0]);
         } else {
           $file->setName(trim($params['name']));
         }
         $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
-        $file->setNotes('Test File');
+        foreach (explode(',', $params['selected_tags']) as $tag)
+        {
+          $file->addTag($this->tag_repo->findOneBy(['name' => $tag]));
+        }
+
         $cwd_id = $this->request_stack->getSession()->get('cwd_id');
         $cwd = $this->request_stack->getSession()->get('cwd');
         $dir = $this->dir_repo->find($cwd_id);
@@ -91,7 +98,9 @@ class FileController extends AbstractController
       }
     }
     
-    return $this->redirectToRoute('folder_display', ['id' => $cwd_id]);
+    return $this->redirectToRoute('folder_display', [
+      'id' => $cwd_id,
+    ]);
   }
 
   /**
