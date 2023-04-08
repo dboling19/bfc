@@ -194,6 +194,33 @@ a.db-button, a.db-bar-item {
   border-bottom:15px solid #d8dce3;
 }
 
+span .db-tag-label {
+  background-color:#e2cdff;
+  width:auto;
+  position:relative;
+  margin-top:10px;
+  margin-right:4px;
+  font-size:10px;
+  padding-left:3px;
+  padding-top:2px;
+  padding-bottom:2px;
+  white-space:nowrap;
+}
+
+.db-tag-remove-btn {
+  background-color:#b4a4cc;
+  position:relative;
+  cursor:pointer;
+  top:0;
+  right:0;
+  padding:2px 4px;
+  margin-left:2px;
+}
+
+.db-tag-remove-btn:hover {
+  background-color:#e1cdff;
+}
+
 :disabled {
   border: 1px solid lightgrey;
 }

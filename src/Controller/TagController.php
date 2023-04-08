@@ -29,14 +29,15 @@ class TagController extends AbstractController
   public function tags_display(): Response
   {
     $tags = $this->tag_repo->findAll();
+    $tags_array = [];
     foreach ($tags as $tag) 
     {
-      $tags_names[] = $tag->getName();
+      $tags_array[] = $tag->getName();
     }
 
     return $this->render('displays/tags.html.twig', [
         'results' => $tags,
-        'tags' => $tags_names,
+        'tags' => $tags_array,
     ]);
   }
 

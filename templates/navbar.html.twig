@@ -21,8 +21,10 @@
     </a>  
   </div>
 
-  {{ include('forms/add_file_form.html.twig') }}
-  {{ include('forms/add_dir_form.html.twig') }}
+  {% if route_name == 'folder_display' %}
+    {{ include('forms/add_file_form.html.twig') }}
+    {{ include('forms/add_dir_form.html.twig') }}
+  {% endif %}
 
   <script>
 

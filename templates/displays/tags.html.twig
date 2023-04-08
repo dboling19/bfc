@@ -2,7 +2,7 @@
 {% block title %}Tags{% endblock %}
 {% block body %}
 {{ include("navbar.html.twig") }}
-<div class="db-border db-left" style="width:20%">
+<div class="db-border db-left" style="width:20%;max-width:300px">
   <form action="{{ path('add_tag') }}" id="tag-form"method="POST" class="db-panel">
     <p>
       <label for="tag-name">
@@ -16,7 +16,7 @@
     </p>
   </form>
 </div>
-<div style="width:60%"
+<div style="">
   <div class="db-threequarter db-left db-max-large">
     <table class="db-table">
       <tr>
@@ -34,7 +34,7 @@
 </div>
 
 <script>
-  var tags = {{ tags|json_encode()|raw }};
+  const tags = {{ tags|json_encode()|raw }};
   var tag_name = document.getElementById('tag_name');
   tag_name.addEventListener('blur', (event) => {
     if (tags.includes(tag_name.value.toLowerCase()))
@@ -42,14 +42,15 @@
       error_message_box = document.getElementById('error-message');
       error_message_box.style.visibility = 'visible';
       error_message_box.innerHTML = 'Tag already exists';
+    } else {
+      error_message_box = document.getElementById('error-message');
+      error_message_box.style.visibility = 'hidden';
+      error_message_box.innerHTML = '';
     }
   });
 
   var tag_form = document.getElementById('tag-form');
-  tag_form.addEventListener('submit', process_form);
-
-  function process_form(form)
-  {
+  tag_form.addEventListener('submit', (event) => {
     form.preventDefault();
     if (tags.includes(tag_name.value.toLowerCase()))
     {
@@ -59,7 +60,8 @@
     } else {
       this.submit();
     }
-  }
+  });
+
 </script>
 
 {% endblock %}
