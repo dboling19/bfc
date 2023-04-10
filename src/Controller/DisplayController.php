@@ -90,6 +90,7 @@ class DisplayController extends AbstractController
     $results = array_merge($file_results, $dir_results);
 
     $tags = $this->tag_repo->findAll();
+    $tags_array = [];
     foreach ($tags as $tag) 
     {
       $tags_array[] = $tag->getName();

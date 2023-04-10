@@ -1,18 +1,19 @@
 {% block body %}
-<div class="db-form-popup db-quarter db-panel db-border" id="add-item-form" hidden style="max-width:300px; min-width:300px">
-  <form action="{{ path('file_upload') }}" method="POST" class="db-border db-panel" enctype="multipart/form-data">
+<div class="db-form-popup db-quarter db-panel db-border" id="add_item_popup" hidden style="max-width:300px; min-width:300px">
+  <form action="{{ path('file_upload') }}" method="POST" id="add_item_form" class="db-border db-panel" enctype="multipart/form-data">
     <p>
       <label for="name">Filename</label>
       <br>
       <input type="text" name="name" class="db-input"/>
     </p>
     <p>
-      <label for="tags">Tags</label>
+      <label for="file_tags">Tags</label>
       <br>
-      <input type="text" id="tags" class="db-input"/>
-      <input type="text" name="selected_tags" id="selected_tags" hidden/>
-      <span id="tags-list"></span>
-      <p class="db-error-message db-top-arrow" id="error-message"></p>
+      <input type="text" id="file_tags" class="db-input"/>
+      <input type="text" name="file_selected_tags" id="file_selected_tags" hidden/>
+      <p class="db-error-message db-top-arrow" id="file_error_message"></p>
+      <span id="file_tags_list"></span>
+      <br>
     </p>
     <p>
       <label for="file" class="db-button">Select File</label>
@@ -28,17 +29,18 @@
 
 <script>
   function toggle_add_file_form() {
-    item_form = document.getElementById('add-item-form');
+    item_form = document.getElementById('add_item_popup');
+    dir_form = document.getElementById('add_dir_popup');
     if (item_form.style.display == 'block') {
       item_form.style.display = 'none';
     } else {
       item_form.style.display = 'block';
+      dir_form.style.display = 'none';
     }
   }
 
   const actual_btn = document.getElementById('file');
   const file_chosen = document.getElementById('file-chosen');
-  const tags_field = document.getElementById('tags');
   actual_btn.addEventListener('change', function(){
     file_names = [];
     for (let file of this.files) {
@@ -57,63 +59,65 @@
     }
   });
 
-  var selected_tags = [];
-  const tags = {{ tags|json_encode()|raw }}
-  const tags_list = document.getElementById('tags-list');
-  tags_field.onkeyup = function(event) {
-    if (!['', ' ', null].includes(tags_field.value.toLowerCase().trim()) && event.code == 'Space' && !selected_tags.includes(tags_field.value.toLowerCase().trim()) && tags.includes(tags_field.value.toLowerCase().trim()))
+  var file_selected_tags = [];
+  const file_tags = {{ tags|json_encode()|raw }}
+  const file_tags_field = document.getElementById('file_tags');
+  const file_tags_list = document.getElementById('file_tags_list');
+  const file_selected_tags_field = document.getElementById('file_selected_tags');
+  file_tags_field.onkeyup = function(file_event) {
+    if (!['', ' ', null].includes(file_tags_field.value.toLowerCase().trim()) && file_event.code == 'Space' && !file_selected_tags.includes(file_tags_field.value.toLowerCase().trim()) && file_tags.includes(file_tags_field.value.toLowerCase().trim()))
     {
-      tag_value = tags_field.value.trim();
-      tag_label = document.createElement('span');
-      tag_label.innerText = tag_value;
-      tag_label.classList.add('db-tag-label');
-      tag_label.setAttribute('id', 'tag_label_' + tag_value);
-      tag_label.setAttribute('name', 'selected_tags[]');
-      tag_remove_btn = document.createElement('span');
-      tag_remove_btn.innerText = 'x';
-      tag_remove_btn.classList.add('db-tag-remove-btn');
-      tag_remove_btn.setAttribute('id', 'tag_remove_' + tag_value);
-      tag_remove_btn.setAttribute('onclick', 'remove_tag(this)');
-      tags_list.appendChild(tag_label);
-      tag_label.appendChild(tag_remove_btn);
+      file_tag_value = file_tags_field.value.trim();
+      file_tag_label = document.createElement('span');
+      file_tag_label.innerText = file_tag_value;
+      file_tag_label.classList.add('db-tag-label');
+      file_tag_label.setAttribute('id', 'file_tag_label_' + file_tag_value);
+      file_tag_label.setAttribute('name', 'file_selected_tags[]');
+      file_tag_remove_btn = document.createElement('span');
+      file_tag_remove_btn.innerText = 'x';
+      file_tag_remove_btn.classList.add('db-tag-remove-btn');
+      file_tag_remove_btn.setAttribute('id', 'file_tag_remove_' + file_tag_value);
+      file_tag_remove_btn.setAttribute('onclick', 'file_remove_tag(this)');
+      file_tags_list.appendChild(file_tag_label);
+      file_tag_label.appendChild(file_tag_remove_btn);
 
-      error_message_box = document.getElementById('error-message');
-      error_message_box.style.visibility = 'hidden';
-      error_message_box.innerHTML = '';
+      file_error_message_box = document.getElementById('file_error_message');
+      file_error_message_box.style.visibility = 'hidden';
+      file_error_message_box.innerHTML = '';
 
-      selected_tags.push(tag_value);
-      selected_tags_field = document.getElementById('selected_tags');
-      selected_tags_field.value = selected_tags;
-      tags_field.value = '';
-    } else if (!['', ' ', null].includes(tags_field.value.toLowerCase().trim()) && event.code == 'Space' && !tags.includes(tags_field.value.toLowerCase().trim()))
+      file_selected_tags.push(file_tag_value);
+      file_selected_tags_field.value = file_selected_tags;
+      file_tags_field.value = '';
+    } else if (!['', ' ', null].includes(file_tags_field.value.toLowerCase().trim()) && file_event.code == 'Space' && !file_tags.includes(file_tags_field.value.toLowerCase().trim()))
     {
-      error_message_box = document.getElementById('error-message');
-      error_message_box.style.visibility = 'visible';
-      error_message_box.innerHTML = 'Tag doesn\'t exist';
+      file_error_message_box = document.getElementById('file_error_message');
+      file_error_message_box.style.visibility = 'visible';
+      file_error_message_box.innerHTML = 'Tag doesn\'t exist';
     }
   }
 
-  function remove_tag(tag_remove_btn)
+  function file_remove_tag(file_tag_remove_btn)
   {
-    tag_label = tag_remove_btn.parentElement;
-    tag_value = tag_label.innerText.toLowerCase().slice(0, -1);
-    tag_index = selected_tags.indexOf(tag_value);
-    selected_tags.splice(tag_index, 1);
-    selected_tags_field.value = selected_tags;
-    tag_label.remove();
-    tag_remove_btn.remove();
+    file_tag_label = file_tag_remove_btn.parentElement;
+    file_tag_value = file_tag_label.innerText.toLowerCase().slice(0, -1);
+    file_tag_index = file_selected_tags.indexOf(file_tag_value);
+    console.log(file_tag_value);
+    file_selected_tags.splice(file_tag_index, 1);
+    file_selected_tags_field.value = file_selected_tags;
+    file_tag_label.remove();
+    file_tag_remove_btn.remove();
   }
 
-  var add_item_form = document.getElementById('add-item-form');
-  add_item_form.addEventListener('submit', (event) => {
-    this.preventDefault();
-    if (tags.includes(tags_field.value.toLowerCase()))
+  var add_item_form = document.getElementById('add_item_form');
+  add_item_form.addEventListener('submit', (file_event) => {
+    file_event.preventDefault();
+    if (file_tags.includes(file_tags_field.value.toLowerCase()))
     {
-      error_message_box = document.getElementById('error-message');
-      error_message_box.style.visibility = 'visible';
-      error_message_box.innerHTML = 'Tag doesn\'t exist';
+      file_error_message_box = document.getElementById('file_error_message');
+      file_error_message_box.style.visibility = 'visible';
+      file_error_message_box.innerHTML = 'Tag doesn\'t exist';
     } else {
-      this.submit();
+      add_item_form.submit();
     }
   });
 

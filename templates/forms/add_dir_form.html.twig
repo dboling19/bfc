@@ -1,28 +1,99 @@
-
 {% block body %}
-  
-  <div class="db-form-popup db-quarter db-panel db-border" id="add-dir-form" hidden style="max-width:300px; min-width:300px">
-    <form action="{{ path('dir_create') }}" method="POST" class="db-border db-panel">
-      <p>
-        <label>Directory Name</label>
-        <br>
-        <input type="text" name="name" class="db-input"/>
-      </p>
-      <p>
-        <button type="submit" class="db-button">Create Directory</button>
-      </p>
-    </form>
-  </div>
+<div class="db-form-popup db-quarter db-panel db-border" id="add_dir_popup" hidden style="max-width:300px; min-width:300px">
+  <form action="{{ path('dir_create') }}" method="POST" id="add_dir_form" class="db-border db-panel">
+    <p>
+      <label>Directory Name</label>
+      <br>
+      <input type="text" name="name" class="db-input"/>
+    </p>
+    <p>
+      <label for="tags">Tags</label>
+      <br>
+      <input type="text" id="folder_tags" class="db-input"/>
+      <input type="text" name="folder_selected_tags" id="folder_selected_tags" hidden/>
+      <p class="db-error-message db-top-arrow" id="folder_error_message"></p>
+      <span id="folder_tags_list"></span>
+      <br>
+    </p>
+    <p>
+      <button type="submit" class="db-button">Create Directory</button>
+    </p>
+  </form>
+</div>
 
-  <script>
+<script>
   function toggle_add_dir_form() {
-    item_form = document.getElementById('add-dir-form');
-    if (item_form.style.display == 'block') {
-      item_form.style.display = 'none';
+    dir_form = document.getElementById('add_dir_popup');
+    item_form = document.getElementById('add_item_popup');
+    if (dir_form.style.display == 'block') {
+      dir_form.style.display = 'none';
     } else {
-      item_form.style.display = 'block';
+      dir_form.style.display = 'block';
+      item_form.style.display = 'none';
     }
   }
-  </script>
+
+  var folder_selected_tags = [];
+  const folder_tags = {{ tags|json_encode()|raw }}
+  const folder_tags_field = document.getElementById('folder_tags');
+  const folder_tags_list = document.getElementById('folder_tags_list');
+  const folder_selected_tags_field = document.getElementById('folder_selected_tags');
+  folder_tags_field.onkeyup = function(folder_event) {
+    if (!['', ' ', null].includes(folder_tags_field.value.toLowerCase().trim()) && folder_event.code == 'Space' && !folder_selected_tags.includes(folder_tags_field.value.toLowerCase().trim()) && folder_tags.includes(folder_tags_field.value.toLowerCase().trim()))
+    {
+      folder_tag_value = folder_tags_field.value.trim();
+      folder_tag_label = document.createElement('span');
+      folder_tag_label.innerText = folder_tag_value;
+      folder_tag_label.classList.add('db-tag-label');
+      folder_tag_label.setAttribute('id', 'folder_tag_label_' + folder_tag_value);
+      folder_tag_label.setAttribute('name', 'folder_selected_tags[]');
+      folder_tag_remove_btn = document.createElement('span');
+      folder_tag_remove_btn.innerText = 'x';
+      folder_tag_remove_btn.classList.add('db-tag-remove-btn');
+      folder_tag_remove_btn.setAttribute('id', 'folder_tag_remove_' + folder_tag_value);
+      folder_tag_remove_btn.setAttribute('onclick', 'folder_remove_tag(this)');
+      folder_tags_list.appendChild(folder_tag_label);
+      folder_tag_label.appendChild(folder_tag_remove_btn);
+
+      folder_error_message_box = document.getElementById('folder_error_message');
+      folder_error_message_box.style.visibility = 'hidden';
+      folder_error_message_box.innerHTML = '';
+
+      folder_selected_tags.push(folder_tag_value);
+      folder_selected_tags_field.value = folder_selected_tags;
+      folder_tags_field.value = '';
+    } else if (!['', ' ', null].includes(folder_tags_field.value.toLowerCase().trim()) && folder_event.code == 'Space' && !folder_tags.includes(folder_tags_field.value.toLowerCase().trim()))
+    {
+      folder_error_message_box = document.getElementById('folder_error_message');
+      folder_error_message_box.style.visibility = 'visible';
+      folder_error_message_box.innerHTML = 'Tag doesn\'t exist';
+    }
+  }
+
+  function folder_remove_tag(folder_tag_remove_btn)
+  {
+    folder_tag_label = folder_tag_remove_btn.parentElement;
+    folder_tag_value = folder_tag_label.innerText.toLowerCase().slice(0, -1);
+    folder_tag_index = folder_selected_tags.indexOf(folder_tag_value);
+    folder_selected_tags.splice(folder_tag_index, 1);
+    folder_selected_tags_field.value = folder_selected_tags;
+    folder_tag_label.remove();
+    folder_tag_remove_btn.remove();
+  }
+
+  var add_folder_form = document.getElementById('add_dir_form');
+  add_folder_form.addEventListener('submit', (folder_event) => {
+    folder_event.preventDefault();
+    if (folder_tags.includes(folder_tags_field.value.toLowerCase()))
+    {
+      folder_error_message_box = document.getElementById('folder_error_message');
+      folder_error_message_box.style.visibility = 'visible';
+      folder_error_message_box.innerHTML = 'Tag doesn\'t exist';
+    } else {
+      add_folder_form.submit();
+    }
+  });
+
+</script>
 
 {% endblock %}
