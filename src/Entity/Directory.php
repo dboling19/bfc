@@ -39,7 +39,8 @@ class Directory
     private Collection $subdirectories;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'directories')]
-    private Collection $tags;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Collection $tags = null;
 
     public function __construct()
     {
@@ -199,5 +200,6 @@ class Directory
 
         return $this;
     }
+
 
 }

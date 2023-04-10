@@ -51,7 +51,7 @@
       folder_tag_remove_btn.innerText = 'x';
       folder_tag_remove_btn.classList.add('db-tag-remove-btn');
       folder_tag_remove_btn.setAttribute('id', 'folder_tag_remove_' + folder_tag_value);
-      folder_tag_remove_btn.setAttribute('onclick', 'remove_tag(this)');
+      folder_tag_remove_btn.setAttribute('onclick', 'folder_remove_tag(this)');
       folder_tags_list.appendChild(folder_tag_label);
       folder_tag_label.appendChild(folder_tag_remove_btn);
 
@@ -70,7 +70,7 @@
     }
   }
 
-  function remove_tag(folder_tag_remove_btn)
+  function folder_remove_tag(folder_tag_remove_btn)
   {
     folder_tag_label = folder_tag_remove_btn.parentElement;
     folder_tag_value = folder_tag_label.innerText.toLowerCase().slice(0, -1);

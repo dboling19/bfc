@@ -45,7 +45,8 @@ class Doc
     private ?string $mime_type = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, mappedBy: 'docs')]
-    private Collection $tags;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Collection $tags = null;
 
     public function __construct()
     {

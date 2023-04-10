@@ -74,9 +74,13 @@ class DirectoryController extends AbstractController
       $dir->setName($name);
       $dir->setParent($db_cwd);
     }
-    foreach (explode(',', $params['folder_selected_tags']) as $tag)
+    $selected_tags = explode(',', $params['folder_selected_tags']);
+    if ($selected_tags[0] != '')
     {
-      $dir->addTag($this->tag_repo->findOneBy(['name' => $tag]));
+      foreach (explode(',', $params['folder_selected_tags']) as $tag)
+      {
+        $dir->addTag($this->tag_repo->findOneBy(['name' => $tag]));
+      }
     }
     $this->em->persist($dir);
     $this->em->flush();
