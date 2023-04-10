@@ -82,7 +82,7 @@
       file_tag_label.appendChild(file_tag_remove_btn);
 
       file_error_message_box = document.getElementById('file_error_message');
-      file_error_message_box.style.visibility = 'hidden';
+      file_error_message_box.style.display = 'none';
       file_error_message_box.innerHTML = '';
 
       file_selected_tags.push(file_tag_value);
@@ -91,7 +91,7 @@
     } else if (!['', ' ', null].includes(file_tags_field.value.toLowerCase().trim()) && file_event.code == 'Space' && !file_tags.includes(file_tags_field.value.toLowerCase().trim()))
     {
       file_error_message_box = document.getElementById('file_error_message');
-      file_error_message_box.style.visibility = 'visible';
+      file_error_message_box.style.display = 'block';
       file_error_message_box.innerHTML = 'Tag doesn\'t exist';
     }
   }
@@ -114,7 +114,7 @@
     if (file_tags.includes(file_tags_field.value.toLowerCase()))
     {
       file_error_message_box = document.getElementById('file_error_message');
-      file_error_message_box.style.visibility = 'visible';
+      file_error_message_box.style.display = 'block';
       file_error_message_box.innerHTML = 'Tag doesn\'t exist';
     } else {
       add_item_form.submit();

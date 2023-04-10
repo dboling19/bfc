@@ -43,7 +43,7 @@ tr:nth-child(odd) {
 }
 
 tr:nth-child(even) {
-  background-color: $nord4;
+  background-color: #f2f6ff;
 }
 
 a.db-button, a.db-bar-item { 
@@ -185,7 +185,7 @@ a.db-button, a.db-bar-item {
   padding-top:5px;
   padding-bottom:5px;
   margin-left:0px;
-  visibility:hidden;
+  display:none;
   border-radius:2px;
   position:relative;
 }
@@ -342,7 +342,7 @@ a.db-button, a.db-bar-item {
   padding-top:5px;
   padding-bottom:5px;
   margin-left:0px;
-  visibility:hidden;
+  display:none;
   border-radius:2px;
   position:relative;
 }
