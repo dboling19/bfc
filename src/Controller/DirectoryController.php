@@ -15,8 +15,10 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use App\Repository\DocRepository;
 use App\Repository\DirectoryRepository;
+use App\Repository\TagRepository;
 use App\Entity\Directory;
 use App\Entity\Doc;
+use App\Entity\Tag;
 use App\Service\DirectoryHelper;
 
 
@@ -27,15 +29,17 @@ class DirectoryController extends AbstractController
   private $em;
   private $dir_repo;
   private $file_repo;
+  private $tag_repo;
   private $request_stack;
   private $dir_helper;
 
-  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
+  public function __construct(DirectoryHelper $dir_helper, ContainerBagInterface $params, ManagerRegistry $doctrine, TagRepository $tag_repo, DocRepository $file_repo, DirectoryRepository $dir_repo, RequestStack $request_stack)
   { 
     $this->root_dir = $params->get('app.root_dir');
     $this->em = $doctrine->getManager();
     $this->dir_repo = $dir_repo;
     $this->file_repo = $file_repo;
+    $this->tag_repo = $tag_repo;
     $this->dir_helper = $dir_helper;
 
     $this->request_stack = $request_stack;
@@ -69,6 +73,10 @@ class DirectoryController extends AbstractController
       $dir->setPath($cwd . $name . '/');
       $dir->setName($name);
       $dir->setParent($db_cwd);
+    }
+    foreach (explode(',', $params['folder_selected_tags']) as $tag)
+    {
+      $dir->addTag($this->tag_repo->findOneBy(['name' => $tag]));
     }
     $this->em->persist($dir);
     $this->em->flush();

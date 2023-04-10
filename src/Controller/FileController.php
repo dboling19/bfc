@@ -76,7 +76,7 @@ class FileController extends AbstractController
         $file->setSize($this->fileinfo->formatBytes($result->getSize()));
         $file->setDateCreated(new \DateTime(date('Y-m-d H:i:s', $result->getCTime())));
         $file->setDateModified(new \DateTime(date('Y-m-d H:i:s', $result->getMTime())));
-        foreach (explode(',', $params['selected_tags']) as $tag)
+        foreach (explode(',', $params['file_selected_tags']) as $tag)
         {
           $file->addTag($this->tag_repo->findOneBy(['name' => $tag]));
         }

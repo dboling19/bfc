@@ -21,11 +21,17 @@ label .db-button {
   font-family: sans-serif;
 }
 
-tr, td {
-  width: auto;
-  padding: 2px;
+th {
+  width:auto;
+  padding: 4px;
   border-bottom: 1px solid $nord2;
-  text-align: left;
+  text-align:left;
+}
+
+tr, td {
+  width:auto;
+  padding:4px;
+  text-align:left;
 }
 
 tr:hover {
@@ -147,6 +153,7 @@ a.db-button, a.db-bar-item {
   position: fixed;
   top: 40px;
   left: 60px;
+  z-index:1;
 }
 
 .db-bar {
@@ -194,14 +201,16 @@ a.db-button, a.db-bar-item {
   border-bottom:15px solid #d8dce3;
 }
 
-span .db-tag-label {
-  background-color:#e2cdff;
+.db-tag-label {
+  background-color:#39A0ED;
+  color:white;
   width:auto;
   position:relative;
   margin-top:10px;
   margin-right:4px;
   font-size:10px;
   padding-left:3px;
+  padding-right:1px;
   padding-top:2px;
   padding-bottom:2px;
   white-space:nowrap;
@@ -225,6 +234,22 @@ span .db-tag-label {
   border: 1px solid lightgrey;
 }
 
+.db-button:disabled {
+  background-color:#d8dce3!important;
+  color:#97999b!important;
+  cursor:not-allowed;
+}
+
+.db-button:disabled:hover {
+  background-color:#d8dce3!important;
+  color:#97999b!important;
+  cursor:not-allowed;
+}
+
+
+
+
+// start dark mode
 .db-dark-mode {
   background-color: $nord0;
   color: $nord6;
@@ -242,21 +267,39 @@ span .db-tag-label {
   color: $nord6!important;
 }
 
+.db-dark-mode .db-button:disabled {
+  background-color:#535e77!important;
+  color:#97999b!important;
+  cursor:not-allowed;
+}
+
+.db-dark-mode .db-button:disabled:hover {
+  background-color:#535e77!important;
+  color:#97999b!important;
+  cursor:not-allowed;
+}
+
 .db-dark-mode #navbar {
   background-color: $nord1;
   color: $nord4;
 }
 
 .db-dark-mode #navbar .db-button-route {
-  background-color: $nord3;
-  color: $nord4;
+  background-color: $nord4;
+  color: $nord1;
+}
+
+.db-dark-mode th {
+  width:auto;
+  padding:4px;
+  text-align:left;
+  border-bottom: 1px solid $nord4;
 }
 
 .db-dark-mode tr, td {
-  width: auto;
-  padding: 4px;
-  border-bottom: 1px solid $nord4;
-  text-align: left;
+  width:auto;
+  padding:4px;
+  text-align:left;
 }
 
 .db-dark-mode tr:hover {
@@ -289,4 +332,55 @@ span .db-tag-label {
   background-color: $nord1;
   color: $nord6;
 
+}
+
+.db-dark-mode .db-error-message {
+  background-color:#434c5e;
+  width:200px;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:5px;
+  padding-bottom:5px;
+  margin-left:0px;
+  visibility:hidden;
+  border-radius:2px;
+  position:relative;
+}
+
+.db-dark-mode .db-error-message.db-top-arrow:after {
+  content: " ";
+  position:absolute;
+  left:15px;
+  top:-15px;
+  border-top:none;
+  border-right:10px solid transparent;
+  border-left:10px solid transparent;
+  border-bottom:15px solid #434c5e;
+}
+
+span .db-dark-mode .db-tag-label {
+  background-color:#e2cdff;
+  width:auto;
+  position:relative;
+  margin-top:10px;
+  margin-right:4px;
+  font-size:10px;
+  padding-left:3px;
+  padding-top:2px;
+  padding-bottom:2px;
+  white-space:nowrap;
+}
+
+.db-dark-mode .db-tag-remove-btn {
+  background-color:#b4a4cc;
+  position:relative;
+  cursor:pointer;
+  top:0;
+  right:0;
+  padding:2px 4px;
+  margin-left:2px;
+}
+
+.db-dark-mode .db-tag-remove-btn:hover {
+  background-color:#e1cdff;
 }

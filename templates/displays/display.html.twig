@@ -2,11 +2,12 @@
 {% block title %}Home{% endblock %}
 {% block body %}
 {{ include("navbar.html.twig") }}
-<div style="max-width:60%">
+<div>
   <div class="db-threequarter db-left db-max-large">
     <table class="db-table">
       <tr>
         <th style="padding-left:8px">Name</th>
+        <th>Tags</th>
         <th>Date Modified</th>
         <th>Filesize</th>
       </tr>
@@ -15,10 +16,9 @@
           <td style="padding-left:8px">
             <b>. .</b>
           </td>
-          <td>
-          </td>
-          <td>
-          </td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       {% endif %}
       {% for result in results %}
@@ -34,6 +34,11 @@
               <i class="fa-regular fa-file" style="padding-left:2px; padding-right:3px"></i>
             {% endif %}
             {{ result.name }}
+          </td>
+          <td>
+            {% for tag in result.tags %}
+              <span class="db-tag-label" style="z-index:0">{{ tag.name }}</span>
+            {% endfor %}
           </td>
           <td>
             {% if result.dateModified is defined %}
