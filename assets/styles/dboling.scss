@@ -255,11 +255,12 @@ a.db-button, a.db-bar-item {
 }
 
 .db-dark-mode .db-button {
+  background-color: $nord3;
   color: $nord6;
 }
 
 .db-dark-mode .db-button:hover {
-  background-color: $nord3!important;
+  background-color: $nord2!important;
   color: $nord6!important;
 }
 
