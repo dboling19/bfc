@@ -19,7 +19,7 @@
       <label for="file" class="db-button">Select File</label>
       <input type="file" name="file[]" id="file" required hidden multiple/>
       <br id="file_list_break" hidden>
-      <span id="file-chosen">No File Chosen</span>
+      <span id="file-chosen" style="display:flex">No File Chosen</span>
     </p>
     <p>
       <button type="submit" class="db-button">Upload File</button>
@@ -79,7 +79,7 @@
       file_tag_remove_btn.setAttribute('id', 'file_tag_remove_' + file_tag_value);
       file_tag_remove_btn.setAttribute('onclick', 'file_remove_tag(this)');
       file_tags_list.appendChild(file_tag_label);
-      file_tag_label.appendChild(file_tag_remove_btn);
+      file_tags_list.appendChild(file_tag_remove_btn);
 
       file_error_message_box = document.getElementById('file_error_message');
       file_error_message_box.style.display = 'none';
