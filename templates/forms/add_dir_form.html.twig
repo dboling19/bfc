@@ -53,10 +53,10 @@
       folder_tag_remove_btn.setAttribute('id', 'folder_tag_remove_' + folder_tag_value);
       folder_tag_remove_btn.setAttribute('onclick', 'folder_remove_tag(this)');
       folder_tags_list.appendChild(folder_tag_label);
-      folder_tag_label.appendChild(folder_tag_remove_btn);
+      folder_tags_list.appendChild(folder_tag_remove_btn);
 
       folder_error_message_box = document.getElementById('folder_error_message');
-      folder_error_message_box.style.visibility = 'hidden';
+      folder_error_message_box.style.display = 'none';
       folder_error_message_box.innerHTML = '';
 
       folder_selected_tags.push(folder_tag_value);
@@ -65,7 +65,7 @@
     } else if (!['', ' ', null].includes(folder_tags_field.value.toLowerCase().trim()) && folder_event.code == 'Space' && !folder_tags.includes(folder_tags_field.value.toLowerCase().trim()))
     {
       folder_error_message_box = document.getElementById('folder_error_message');
-      folder_error_message_box.style.visibility = 'visible';
+      folder_error_message_box.style.display = 'block';
       folder_error_message_box.innerHTML = 'Tag doesn\'t exist';
     }
   }
@@ -87,7 +87,7 @@
     if (folder_tags.includes(folder_tags_field.value.toLowerCase()))
     {
       folder_error_message_box = document.getElementById('folder_error_message');
-      folder_error_message_box.style.visibility = 'visible';
+      folder_error_message_box.style.display = 'block';
       folder_error_message_box.innerHTML = 'Tag doesn\'t exist';
     } else {
       add_folder_form.submit();
