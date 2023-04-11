@@ -3,7 +3,17 @@
 {% block body %}
 {{ include("navbar.html.twig") }}
 <div>
-  <div class="db-threequarter db-left db-max-large">
+  <div style="display:block">
+    <div>
+      <a class="db-parent-folder" href="{{ path('chdir', {home: true}) }}">Drive</a>
+      {% if cwd_entity.parent != null %}
+        <span class="db-parent-separator" style="margin-bottom:10px;"><b>></b></span> 
+        <button class="db-parent-folder" href="{{ path('chdir', {id: cwd_entity.parent.id}) }}">{{ cwd_entity.name }}</button>
+      {% endif %}
+    </div>
+    {{ include("displays/details.html.twig") }}
+  </div>
+  <div class="db-threequarter db-left db-max-large" style="display:block">
     <table class="db-table">
       <tr>
         <th style="padding-left:8px">Name</th>
@@ -11,16 +21,6 @@
         <th>Date Modified</th>
         <th>Filesize</th>
       </tr>
-      {% if cwd_entity.parent != null %}
-        <tr style="padding-left:8px" onclick="window.location.href='{{ path('chdir', {id: cwd_entity.parent.id}) }}'">
-          <td style="padding-left:8px">
-            <b>. .</b>
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      {% endif %}
       {% for result in results %}
         {% if result.path is defined %}
           <tr onclick="window.location.href='{{ path('folder_display', {id: result.id, type: 'dir'}) }}'">
@@ -54,14 +54,7 @@
       {% endfor %}
     </table>
   </div>
-  {{ include("displays/details.html.twig") }}
   {# {{ include("context_menu.html.twig") }} #}
 </div>
-
-<script>
-
-
-
-</script>
 
 {% endblock %}

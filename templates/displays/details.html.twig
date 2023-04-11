@@ -1,38 +1,23 @@
 {% block body %}
 {% set route_name = app.request.attributes.get('_route')%}
-<div class="db-container db-quarter db-left db-max-small">
+<div class="">
   {% if entity is not empty %}
-    <p class="db-border db-panel db-info">
-      <b>Details</b>
-      <br>
-      {{ entity.name }}
-      <br>
-      {% if entity.size is defined %}
-        {{ entity.size }}
-      {% endif %}
-      <br>
-      {% if entity.dateModified is defined %}
-        {{ entity.dateModified|format_datetime('medium', 'short') }}
-      {% endif %}
-      <br>
-      <span><button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'">Download</button></span>
-
+      <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'" style="margin-left:6px">Download</button>
       {% if route_name == 'trash_display' %}
         {% if entity.path is defined %}
-          <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button></span>
-          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
+          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button>
+          <button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
         {% else %}
-          <span><button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button></span>
+          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button>
         {% endif %}
       {% else %}
         {% if entity.path is defined %}
-          <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button></span>
-          <span><button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
+          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button>
+          <button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
         {% else %}
-          <span><button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button></span>
+          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button>
         {% endif %}
       {% endif %}
-    </p>
   {% endif %}
 </div>
 

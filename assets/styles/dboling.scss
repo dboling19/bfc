@@ -16,6 +16,25 @@ label .db-button {
   margin-top: 1rem;
 }
 
+a {
+  text-decoration:none;
+}
+
+.db-parent-folder {
+  font-size:24px;
+  border-radius:4px;
+  padding:4px;
+}
+
+.db-parent-folder:hover {
+  background-color:#d8dce3;
+}
+
+.db-parent-separator {
+  font-size:24px;
+  padding:4px;
+}
+
 #file-chosen{
   margin-left: 0.3rem;
   font-family: sans-serif;
@@ -333,4 +352,8 @@ span .db-dark-mode .db-tag-label {
 
 .db-dark-mode .db-tag-remove-btn:hover {
   background-color:#e1cdff;
+}
+
+.db-dark-mode a.db-parent-folder:hover {
+  background-color:#4c566a;
 }
