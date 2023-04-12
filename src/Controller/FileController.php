@@ -79,7 +79,7 @@ class FileController extends AbstractController
         $selected_tags = explode(',', $params['file_selected_tags']);
         if ($selected_tags[0] != '')
         {
-          foreach (explode(',', $params['folder_selected_tags']) as $tag)
+          foreach (explode(',', $params['file_selected_tags']) as $tag)
           {
             $file->addTag($this->tag_repo->findOneBy(['name' => $tag]));
           }
