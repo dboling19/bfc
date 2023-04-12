@@ -1,23 +1,19 @@
 {% block body %}
 {% set route_name = app.request.attributes.get('_route')%}
-<div class="">
-  {% if entity is not empty %}
-      <button type="button" class="db-button" name="download_file" onclick="window.location.href='{{ path('download', {id: entity.id}) }}'" style="margin-left:6px">Download</button>
-      {% if route_name == 'trash_display' %}
-        {% if entity.path is defined %}
-          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'dir')">Delete</button>
-          <button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
-        {% else %}
-          <button type="button" class="db-button" name="delete_entity" onclick="delete_entity({{ entity.id }}, 'file')">Delete</button>
-        {% endif %}
-      {% else %}
-        {% if entity.path is defined %}
-          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'dir')">Trash</button>
-          <button type="button" class="db-button" name="cd" onclick="window.location.href='{{ path('chdir', {id: entity.id}) }}'">Open</button>
-        {% else %}
-          <button type="button" class="db-button" name="trash_entity" onclick="trash_entity({{ entity.id }}, 'file')">Trash</button>
-        {% endif %}
-      {% endif %}
+<div id="action_bar" class="db-action-bar" style="display:none">
+  <button type="button" class="db-button" id="download_file" name="download_file" style="margin-left:6px">Download</button>
+  {% if route_name == 'trash_display' %}
+    {% if entity.path is defined %}
+      <button type="button" class="db-button" id="delete_entity" name="delete_entity">Delete</button>
+    {% else %}
+      <button type="button" class="db-button" id="delete_entity" name="delete_entity">Delete</button>
+    {% endif %}
+  {% else %}
+    {% if entity.path is defined %}
+      <button type="button" class="db-button" id="trash_entity" name="trash_entity">Trash</button>
+    {% else %}
+      <button type="button" class="db-button" id="trash_entity" name="trash_entity">Trash</button>
+    {% endif %}
   {% endif %}
 </div>
 

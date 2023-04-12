@@ -1,19 +1,20 @@
 {% extends 'base.html.twig' %}
 {% block title %}Home{% endblock %}
+{% set route_name = app.request.attributes.get('_route')%}
 {% block body %}
 {{ include("navbar.html.twig") }}
 <div>
   <div style="display:block">
-    <div>
-      <a class="db-parent-folder" href="{{ path('chdir', {home: true}) }}">Drive</a>
+    <div id="folder_structure_list" style="margin-top:8px;margin-bottom:8px;">
+      <a class="db-parent-folder" href="{{ path('folder_display', {home: true}) }}">Drive</a>
       {% if cwd_entity.parent != null %}
-        <span class="db-parent-separator" style="margin-bottom:10px;"><b>></b></span> 
+        <span class="db-parent-separator"><b>></b></span> 
         <button class="db-parent-folder" href="{{ path('chdir', {id: cwd_entity.parent.id}) }}">{{ cwd_entity.name }}</button>
       {% endif %}
     </div>
-    {{ include("displays/details.html.twig") }}
+    {{ include("displays/action-bar.html.twig") }}
   </div>
-  <div class="db-threequarter db-left db-max-large" style="display:block">
+  <div style="display:block">
     <table class="db-table">
       <tr>
         <th style="padding-left:8px">Name</th>
@@ -22,11 +23,7 @@
         <th>Filesize</th>
       </tr>
       {% for result in results %}
-        {% if result.path is defined %}
-          <tr onclick="window.location.href='{{ path('folder_display', {id: result.id, type: 'dir'}) }}'">
-        {% else %}
-          <tr onclick="window.location.href='{{ path('folder_display', {id: result.id, type: 'file'}) }}'">
-        {% endif %}
+        <tr onclick="open_action_bar(this, {{ result.id }})">
           <td style="padding-left:8px">
             {% if result.path is defined %}
               <i class="fa-regular fa-folder"></i>
@@ -56,5 +53,30 @@
   </div>
   {# {{ include("context_menu.html.twig") }} #}
 </div>
+
+<script>
+  function open_action_bar(element, id)
+  {
+    action_bar = document.getElementById('action_bar');
+    folder_structure_list = document.getElementById('folder_structure_list');
+    download_file_btn = document.getElementById('download_file');
+    trash_file_btn = document.getElementById('trash_entity');
+    delete_file_btn = document.getElementById('delete_entity');
+
+    folder_structure_list.style.display = 'none';
+    action_bar.style.display = 'block';
+    element.classList.add('db-selected-entity');
+
+    if ( )
+    download_file_btn.setAttribute('onclick', "window.location.href='{{ path('download', {id: "+id+"}) }}'");
+    if ({{ route_name|raw }} == 'trash_display')
+    {
+      delete_file_btn.setAttribute('onclick', "delete_entity("+id+")");
+    } else {
+      trash_file_btn.setAttribute('onclick', "trash_entity("+id+")");
+    }
+
+  }
+</script>
 
 {% endblock %}

@@ -22,8 +22,15 @@ a {
 
 .db-parent-folder {
   font-size:24px;
-  border-radius:4px;
-  padding:4px;
+  border-radius:8px;
+  padding:8px;
+  margin-left:10px;
+  margin-top:10px;
+  margin-bottom:10px;
+  background-color:none;
+  border: none;
+  color: $nord1;
+  text-align: center;
 }
 
 .db-parent-folder:hover {
@@ -33,6 +40,15 @@ a {
 .db-parent-separator {
   font-size:24px;
   padding:4px;
+}
+
+.db-action-bar {
+  margin-top:8px;
+  margin-bottom:9px;
+}
+
+.db-selected-entity {
+  background-color:#c2deff!important;
 }
 
 #file-chosen{
@@ -54,7 +70,7 @@ tr, td {
 }
 
 tr:hover {
-  background-color: white!important;
+  background-color:white!important;
 }
 
 tr:nth-child(odd) {
@@ -352,6 +368,10 @@ span .db-dark-mode .db-tag-label {
 
 .db-dark-mode .db-tag-remove-btn:hover {
   background-color:#e1cdff;
+}
+
+.db-dark-mode a.db-parent-folder {
+  color:$nord6;
 }
 
 .db-dark-mode a.db-parent-folder:hover {
